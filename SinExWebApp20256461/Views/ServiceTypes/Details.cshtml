@@ -1,0 +1,42 @@
+﻿@model SinExWebApp20256461.Models.ServiceType
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ServiceType</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CutoffTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CutoffTime)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveryTime)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeliveryTime)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ServiceTypeID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

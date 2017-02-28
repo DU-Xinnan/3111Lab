@@ -1,0 +1,40 @@
+﻿@model IEnumerable<SinExWebApp20256461.Models.PackageType>
+
+@{
+    ViewBag.Title = "Package Types";
+}
+
+<h2>Package Types</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Type)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Description)
+        </td>
+        @foreach (var size in item.PackageTypeSize)
+        {
+            <td>
+                Size: @Html.DisplayFor(modelItem => size.size)
+            </td>
+            <td>
+                weight limit: @Html.DisplayFor(modelItem => size.weightLimit)
+            </td>
+        }
+    </tr>
+}
+
+</table>

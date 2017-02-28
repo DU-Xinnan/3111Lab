@@ -1,0 +1,37 @@
+﻿@model IEnumerable<SinExWebApp20256461.Models.ServiceType>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Service Types</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Type)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CutoffTime)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DeliveryTime)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Type)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CutoffTime)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DeliveryTime)
+        </td>
+    </tr>
+}
+
+</table>

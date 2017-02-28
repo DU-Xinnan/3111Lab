@@ -1,0 +1,50 @@
+﻿@model SinExWebApp20256461.Models.ServicePackageFee
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>ServicePackageFee</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PackageType.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PackageType.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ServiceType.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ServiceType.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Fee)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Fee)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.MinimumFee)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.MinimumFee)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ServicePackageFeeID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

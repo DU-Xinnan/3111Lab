@@ -1,0 +1,87 @@
+﻿@model IEnumerable<SinExWebApp20256461.Models.Shipment>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ReferenceNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ServiceType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShippedDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DeliveredDate)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.RecipientName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.NumberOfPackages)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Origin)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Destination)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Status)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.ShippingAccountId)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.ReferenceNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ServiceType)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ShippedDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DeliveredDate)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RecipientName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumberOfPackages)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Origin)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Destination)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Status)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.ShippingAccountId)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.WaybillId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.WaybillId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.WaybillId })
+        </td>
+    </tr>
+}
+
+</table>

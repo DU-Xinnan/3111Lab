@@ -1,0 +1,42 @@
+﻿@model SinExWebApp20256461.Models.PakageTypeSize
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>PakageTypeSize</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.PackageType.Type)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PackageType.Type)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.size)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.size)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.weightLimit)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.weightLimit)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.PakageTypeSizeID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

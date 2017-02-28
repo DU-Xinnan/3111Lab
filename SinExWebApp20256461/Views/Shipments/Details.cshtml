@@ -1,0 +1,98 @@
+﻿@model SinExWebApp20256461.Models.Shipment
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Shipment</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ReferenceNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReferenceNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ServiceType)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ServiceType)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ShippedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ShippedDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.DeliveredDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.DeliveredDate)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.RecipientName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.RecipientName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.NumberOfPackages)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.NumberOfPackages)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Origin)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Origin)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Destination)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Destination)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.ShippingAccountId)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ShippingAccountId)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.WaybillId }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
