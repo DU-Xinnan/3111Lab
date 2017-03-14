@@ -14,7 +14,11 @@ namespace SinExWebApp20256461.Models
         // automatically whenever you change your model schema, please use data migrations.
         // For more information refer to the documentation:
         // http://msdn.microsoft.com/en-us/data/jj591621.aspx
-    
+        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        //{
+        //    Database.SetInitializer<SinExWebApp20256461Context>(null);
+        //    base.OnModelCreating(modelBuilder);
+        //}
         public SinExWebApp20256461Context() : base("name=SinExWebApp20256461Context")
         {
         }
@@ -34,5 +38,9 @@ namespace SinExWebApp20256461.Models
         public System.Data.Entity.DbSet<SinExWebApp20256461.Models.Shipment> Shipments { get; set; }
 
         public System.Data.Entity.DbSet<SinExWebApp20256461.Models.ShippingAccount> ShippingAccounts { get; set; }
+
+        public System.Data.Entity.DbSet<SinExWebApp20256461.Models.PersonalShippingAccount> PersonalShippingAccounts { get; set; }
+
+        public System.Data.Entity.DbSet<SinExWebApp20256461.Models.BusinessShippingAccount> BusinessShippingAccounts { get; set; }
     }
 }

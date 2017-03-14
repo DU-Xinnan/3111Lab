@@ -1,6 +1,6 @@
-﻿@model SinExWebApp20256461.Models.RegisterViewModel
+﻿@model SinExWebApp20256461.ViewModels.RegisterCustomerViewModel
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "Create a " + ViewBag.AccountType + " Shipping Account";
 }
 
 <h2>@ViewBag.Title.</h2>
@@ -8,27 +8,21 @@
 @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
 {
     @Html.AntiForgeryToken()
-    <h4>Create a new account.</h4>
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
     <hr />
-    @Html.ValidationSummary("", new { @class = "text-danger" })
-    <div class="form-group">
-        @Html.LabelFor(m => m.Email, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.Password, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
-        </div>
-    </div>
-    <div class="form-group">
-        @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-2 control-label" })
-        <div class="col-md-10">
-            @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
-        </div>
-    </div>
+    if (ViewBag.AccountType == "Personal")
+    {
+        <h4>Personal Information</h4>
+        @Html.Partial("~/Views/PersonalShippingAccounts/_PersonalInformationPartial.cshtml", Model)
+    }
+    else
+    {
+        <h4>Business Information</h4>
+        @Html.Partial("~/Views/BusinessShippingAccounts/_BusinessInformationPartial.cshtml", Model)
+    }
+    <hr />
+    <h4>Login Information</h4>
+    @Html.Partial("~/Views/Shared/_RegisterLoginPartial.cshtml", Model)
     <div class="form-group">
         <div class="col-md-offset-2 col-md-10">
             <input type="submit" class="btn btn-default" value="Register" />

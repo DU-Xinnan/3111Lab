@@ -10,24 +10,24 @@
             </th>
             <th>
                 @Html.ActionLink("ServiceType", "GenerateHistoryReport", new{ sortOrder = ViewBag.ServiceTypeSortParm,
-               currentShippingAccountId = ViewBag.CurrentShippingAccountId })
+               ShippingAccountId = ViewBag.CurrentShippingAccountId })
             </th>
             <th>
                 @Html.ActionLink("ShippedDate", "GenerateHistoryReport", new{ sortOrder = ViewBag.ShippedDateSortParm,
-               currentShippingAccountId = ViewBag.CurrentShippingAccountId })
+               ShippingAccountId = ViewBag.CurrentShippingAccountId })
             </th>
             <th>
                 @Html.ActionLink("DeliveredDate", "GenerateHistoryReport", new
            {
                sortOrder = ViewBag.DeliveredDateSortParm,
-               currentShippingAccountId = ViewBag.CurrentShippingAccountId
+               ShippingAccountId = ViewBag.CurrentShippingAccountId
            })
             </th>
             <th>
                 @Html.ActionLink("RecipientName", "GenerateHistoryReport", new
            {
                sortOrder = ViewBag.RecipientNameSortParm,
-               currentShippingAccountId = ViewBag.CurrentShippingAccountId
+               ShippingAccountId = ViewBag.CurrentShippingAccountId
            })
             </th>
             <th>
@@ -37,21 +37,21 @@
                 @Html.ActionLink("Origin", "GenerateHistoryReport", new
            {
                sortOrder = ViewBag.OriginSortParm,
-               currentShippingAccountId = ViewBag.CurrentShippingAccountId
+               ShippingAccountId = ViewBag.CurrentShippingAccountId
            })
             </th>
             <th>
                 @Html.ActionLink("Destination", "GenerateHistoryReport", new
            {
                sortOrder = ViewBag.DestinationSortParm,
-               currentShippingAccountId = ViewBag.CurrentShippingAccountId
+               ShippingAccountId = ViewBag.CurrentShippingAccountId
            })
             </th>
             <th>
                 @Html.ActionLink("ShippingAccountId", "GenerateHistoryReport", new
            {
                sortOrder = ViewBag.ShippingAccountIdSortParm,
-               currentShippingAccountId = ViewBag.CurrentShippingAccountId
+               ShippingAccountId = ViewBag.CurrentShippingAccountId
            })
             </th>
         </tr>

@@ -15,7 +15,7 @@ namespace SinExWebApp20256461.Controllers
     {
         private SinExWebApp20256461Context db = new SinExWebApp20256461Context();
         // GET: Shipments/GenerateHistoryReport
-        public ActionResult GenerateHistoryReport(int? ShippingAccountId, string sortOrder, int? currentShippingAccountId, int? page)
+        public ActionResult GenerateHistoryReport(int? ShippingAccountId, string sortOrder,  int? page, DateTime? ShippedStartDate, DateTime? ShippedEndDate)
         {
             // Instantiate an instance of the ShipmentsReportViewModel and the ShipmentsSearchViewModel.
             var shipmentSearch = new ShipmentsReportViewModel();
@@ -26,7 +26,8 @@ namespace SinExWebApp20256461.Controllers
             // Populate the ShippingAccountId dropdown list.
             shipmentSearch.Shipment.ShippingAccounts = PopulateShippingAccountsDropdownList().ToList();
             ViewBag.CurrentShippingAccountId = ShippingAccountId;
-
+            ViewBag.CurrentShippingStartDate = ShippedStartDate;
+            ViewBag.CurrentShippingEndDate = ShippedEndDate;
             // Initialize the query to retrieve shipments using the ShipmentsListViewModel.
             var shipmentQuery = from s in db.Shipments
                                 select new ShipmentsListViewModel
@@ -49,13 +50,23 @@ namespace SinExWebApp20256461.Controllers
                 shipmentQuery = from s in shipmentQuery
                                 where s.ShippingAccountId == ShippingAccountId
                                 select s;
-                // shipmentSearch.Shipments = shipmentQuery.ToList();
+                // shipmentSearch.Shipments = shipmentQuery.ToPagedList(pageNumber, pageSize);
             }
             else
             {
                 // Return an empty result if no shipping account id has been selected.
-                shipmentSearch.Shipments = new ShipmentsListViewModel[0].ToPagedList(pageNumber, pageSize);
-                page = 1;
+                // shipmentSearch.Shipments = new ShipmentsListViewModel[0].ToPagedList(pageNumber, pageSize);
+                shipmentQuery = from s in shipmentQuery
+                                where s.ShippingAccountId == 0
+                                select s;
+                // page = 1;
+            }
+
+            if (ShippedStartDate != null && ShippedEndDate != null)
+            {
+                shipmentQuery = from s in shipmentQuery
+                                where s.ShippedDate >= ShippedStartDate && s.ShippedDate <= ShippedEndDate
+                                select s;
             }
             ViewBag.ServiceTypeSortParm = string.IsNullOrEmpty(sortOrder) ? "serviceType_desc" : "";
             ViewBag.ShippedDateSortParm = string.IsNullOrEmpty(sortOrder) ? "shippedDate_desc" : "";
