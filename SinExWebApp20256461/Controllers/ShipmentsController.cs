@@ -15,6 +15,7 @@ namespace SinExWebApp20256461.Controllers
     {
         private SinExWebApp20256461Context db = new SinExWebApp20256461Context();
         // GET: Shipments/GenerateHistoryReport
+        [Authorize(Roles = "Employee, Customer")]
         public ActionResult GenerateHistoryReport(int? ShippingAccountId, string sortOrder,  int? page, DateTime? ShippedStartDate, DateTime? ShippedEndDate)
         {
             // Instantiate an instance of the ShipmentsReportViewModel and the ShipmentsSearchViewModel.
@@ -42,7 +43,24 @@ namespace SinExWebApp20256461.Controllers
                                     Destination = s.Destination,
                                     ShippingAccountId = s.ShippingAccountId
                                 };
-
+            if (User.IsInRole("Customer"))
+            {
+                string userName = System.Web.HttpContext.Current.User.Identity.Name;
+                shipmentQuery = from s in db.Shipments
+                                where s.ShippingAccount.UserName == userName
+                                select new ShipmentsListViewModel
+                                {
+                                    WaybillId = s.WaybillId,
+                                    ServiceType = s.ServiceType,
+                                    ShippedDate = s.ShippedDate,
+                                    DeliveredDate = s.DeliveredDate,
+                                    RecipientName = s.RecipientName,
+                                    NumberOfPackages = s.NumberOfPackages,
+                                    Origin = s.Origin,
+                                    Destination = s.Destination,
+                                    ShippingAccountId = s.ShippingAccountId
+                                };
+            }
             // Add the condition to select a spefic shipping account if shipping account id is not null.
             if (ShippingAccountId != null)
             {
@@ -105,7 +123,50 @@ namespace SinExWebApp20256461.Controllers
             shipmentSearch.Shipments = shipmentQuery.ToPagedList(pageNumber, pageSize);
             return View(shipmentSearch);
         }
-
+        public ActionResult getCost(string Origin, string Destination, string ServiceType, string PackageType, int weights)
+        {
+            var cost = new CostViewModel();
+            int serviceTypeID = db.ServiceTypes.SingleOrDefault(s => s.Type == ServiceType).ServiceTypeID;
+            int packageTypeID = db.PackageTypes.SingleOrDefault(s => s.Type == PackageType).PackageTypeID;
+            string weightLimit = db.PakageTypeSizes.SingleOrDefault(s => s.PackageTypeID == packageTypeID).weightLimit;
+            var feeQuery = db.ServicePackageFees.SingleOrDefault(s => s.PackageTypeID == packageTypeID && s.ServiceTypeID == serviceTypeID);
+            double minimumFee = (double)feeQuery.MinimumFee;
+            double Fee = (double)feeQuery.Fee;
+            double HKDRate = db.Currencies.SingleOrDefault(s => s.CurrencyCode == "HKD").ExchangeRate;
+            double MOPRate = db.Currencies.SingleOrDefault(s => s.CurrencyCode == "MOP").ExchangeRate;
+            double TWDRate = db.Currencies.SingleOrDefault(s => s.CurrencyCode == "TWD").ExchangeRate;
+            cost.Origin = Origin;
+            cost.Destination = Destination;
+            cost.ServiceType = ServiceType;
+            cost.PackageType = PackageType;
+            cost.weights = weights;
+            if (PackageType == "Envelope")
+            {
+                cost.CNYcost = Fee;
+                cost.HKDcost = Fee * HKDRate;
+                cost.MOPcost = Fee * MOPRate;
+                cost.TYDcost = Fee * TWDRate;
+            }
+            else
+            {
+                int weightLimitLength = weightLimit.Length - 2;
+                int intWeightLimit = Int32.Parse(weightLimit.Substring(0, weightLimitLength));
+                double price = weights * Fee;
+                if (weights > intWeightLimit)
+                {
+                    price += 500;
+                }
+                if (price < minimumFee)
+                {
+                    price = minimumFee;
+                }
+                cost.CNYcost = price;
+                cost.HKDcost = price * HKDRate;
+                cost.MOPcost = price * MOPRate;
+                cost.TYDcost = price * TWDRate;
+            }
+            return View(cost);
+        }
         private SelectList PopulateShippingAccountsDropdownList()
         {
             // TODO: Construct the LINQ query to retrieve the unique list of shipping account ids.

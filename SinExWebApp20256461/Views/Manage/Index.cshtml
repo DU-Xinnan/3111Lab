@@ -23,10 +23,32 @@
             }
             ]
         </dd>
+        @if (ViewBag.customerType == "Personal")
+        {
+            <dt>Display Personal Information</dt>
+            <dd>
+                @Html.ActionLink("Display Personal", "Details", "PersonalShippingAccounts")
+            </dd>
+            <dt>Change Personal Information</dt>
+            <dd>
+                @Html.ActionLink("Change Personal", "Edit", "PersonalShippingAccounts")
+            </dd>
+        }
+        else if (ViewBag.customerType == "Business")
+        {
+            <dt>Display Business Information</dt>
+            <dd>
+                @Html.ActionLink("Display Business", "Details", "BusinessShippingAccounts")
+            </dd>
+            <dt>Change Business Information</dt>
+            <dd>
+                @Html.ActionLink("Change Business", "Edit", "BusinessShippingAccounts")
+            </dd>
+        }
         <dt>External Logins:</dt>
         <dd>
             @Model.Logins.Count [
-            @Html.ActionLink("Manage", "ManageLogins") ]
+            @Html.ActionLink("Manage", "Details") ]
         </dd>
         @*
             Phone Numbers can used as a second factor of verification in a two-factor authentication system.

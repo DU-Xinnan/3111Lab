@@ -54,6 +54,24 @@ namespace SinExWebApp20256461.Controllers
         // GET: /Manage/Index
         public async Task<ActionResult> Index(ManageMessageId? message)
         {
+            if (User.IsInRole("Customer"))
+            {
+                SinExWebApp20256461Context db = new SinExWebApp20256461Context();
+                string userName = System.Web.HttpContext.Current.User.Identity.Name;
+                if (userName == null)
+                {
+                    return RedirectToAction("ManageLogins", new { Message = message });
+                }
+                ShippingAccount currUser = db.ShippingAccounts.SingleOrDefault(s => s.UserName == userName);
+                if (currUser is PersonalShippingAccount)
+                {
+                    ViewBag.customerType = "Personal";
+                }
+                else if (currUser is BusinessShippingAccount)
+                {
+                    ViewBag.customerType = "Business";
+                }
+            }
             ViewBag.StatusMessage =
                 message == ManageMessageId.ChangePasswordSuccess ? "Your password has been changed."
                 : message == ManageMessageId.SetPasswordSuccess ? "Your password has been set."

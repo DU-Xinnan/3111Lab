@@ -10,6 +10,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 using SinExWebApp20256461.Models;
 using SinExWebApp20256461.ViewModels;
+using System.Net;
 
 namespace SinExWebApp20256461.Controllers
 {
@@ -434,7 +435,17 @@ namespace SinExWebApp20256461.Controllers
         {
             return View();
         }
-
+        // GET: /Account/getCustomerRecord
+        /*
+        public ActionResult GetCustomerRecord()
+        {
+            string userName = System.Web.HttpContext.Current.User.Identity.Name;
+            if (userName == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            ShippingAccount ShippingAccount = 
+        }*/
         protected override void Dispose(bool disposing)
         {
             if (disposing)

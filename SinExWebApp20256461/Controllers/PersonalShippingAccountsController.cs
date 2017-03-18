@@ -15,7 +15,6 @@ namespace SinExWebApp20256461.Controllers
         private SinExWebApp20256461Context db = new SinExWebApp20256461Context();
 
 
-
         // GET: PersonalShippingAccounts/Create
         public ActionResult Create()
         {
@@ -33,7 +32,7 @@ namespace SinExWebApp20256461.Controllers
             {
                 // db.ShippingAccounts.Add(personalShippingAccount);
                 // db.SaveChanges();
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Create", "Home");
             }
 
             return View(personalShippingAccount);
@@ -42,10 +41,12 @@ namespace SinExWebApp20256461.Controllers
         // GET: PersonalShippingAccounts/Edit/5
         public ActionResult Edit(int? id)
         {
-            if (id == null)
+            if (User.Identity.Name == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
+            var query =  db.PersonalShippingAccounts.SingleOrDefault(c => c.UserName == User.Identity.Name);
+            id = query.ShippingAccountID;
             PersonalShippingAccount personalShippingAccount = (PersonalShippingAccount)db.ShippingAccounts.Find(id);
             if (personalShippingAccount == null)
             {
@@ -53,7 +54,22 @@ namespace SinExWebApp20256461.Controllers
             }
             return View(personalShippingAccount);
         }
-
+        // GET: PersonalShippingAccounts/Edit/5
+        public ActionResult Details(int? id)
+        {
+            if (User.Identity.Name == null)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            var query = db.PersonalShippingAccounts.SingleOrDefault(c => c.UserName == User.Identity.Name);
+            id = query.ShippingAccountID;
+            PersonalShippingAccount personalShippingAccount = (PersonalShippingAccount)db.ShippingAccounts.Find(id);
+            if (personalShippingAccount == null)
+            {
+                return HttpNotFound();
+            }
+            return View(personalShippingAccount);
+        }
         // POST: PersonalShippingAccounts/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
