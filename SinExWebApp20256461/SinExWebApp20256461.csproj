@@ -356,6 +356,9 @@
     <Content Include="Views\PersonalShippingAccounts\_PersonalInformationPartial.cshtml" />
     <Content Include="Views\BusinessShippingAccounts\_BusinessInformationPartial.cshtml" />
     <Content Include="Views\Shared\_RegisterLoginPartial.cshtml" />
+    <Content Include="Views\Shipments\getCost.cshtml" />
+    <Content Include="Views\Shipments\_getCostsSearchPartial.cshtml" />
+    <Content Include="Views\Shipments\_getCostsDisplayPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

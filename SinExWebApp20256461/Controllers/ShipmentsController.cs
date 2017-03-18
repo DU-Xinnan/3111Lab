@@ -16,7 +16,7 @@ namespace SinExWebApp20256461.Controllers
         private SinExWebApp20256461Context db = new SinExWebApp20256461Context();
         // GET: Shipments/GenerateHistoryReport
         [Authorize(Roles = "Employee, Customer")]
-        public ActionResult GenerateHistoryReport(int? ShippingAccountId, string sortOrder,  int? page, DateTime? ShippedStartDate, DateTime? ShippedEndDate)
+        public ActionResult GenerateHistoryReport(int? ShippingAccountId, string sortOrder, int? page, DateTime? ShippedStartDate, DateTime? ShippedEndDate)
         {
             // Instantiate an instance of the ShipmentsReportViewModel and the ShipmentsSearchViewModel.
             var shipmentSearch = new ShipmentsReportViewModel();
@@ -123,15 +123,37 @@ namespace SinExWebApp20256461.Controllers
             shipmentSearch.Shipments = shipmentQuery.ToPagedList(pageNumber, pageSize);
             return View(shipmentSearch);
         }
-        public ActionResult getCost(string Origin, string Destination, string ServiceType, string PackageType, int weights)
+        public ActionResult getCost(string Origin, string Destination, string ServiceType, string PackageType, int? weights)
         {
             var cost = new CostViewModel();
-            int serviceTypeID = db.ServiceTypes.SingleOrDefault(s => s.Type == ServiceType).ServiceTypeID;
-            int packageTypeID = db.PackageTypes.SingleOrDefault(s => s.Type == PackageType).PackageTypeID;
-            string weightLimit = db.PakageTypeSizes.SingleOrDefault(s => s.PackageTypeID == packageTypeID).weightLimit;
-            var feeQuery = db.ServicePackageFees.SingleOrDefault(s => s.PackageTypeID == packageTypeID && s.ServiceTypeID == serviceTypeID);
-            double minimumFee = (double)feeQuery.MinimumFee;
-            double Fee = (double)feeQuery.Fee;
+            // cost.PackageTypes = (new SelectList(db.PackageTypes.Select(a => a.Type).Distinct())).ToList();
+            // cost.ServiceTypes = (new SelectList(db.ServiceTypes.Select(a => a.Type).Distinct())).ToList();
+            cost.PackageTypes = db.PackageTypes.Select(a => a.Type).Distinct().ToList();
+            cost.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
+            cost.Origins = db.Destinations.Select(a => a.City).Distinct().ToList();
+            cost.Destinations = db.Destinations.Select(a => a.City).Distinct().ToList();
+            // int serviceTypeID = db.ServiceTypes.SingleOrDefault(s => s.Type == ServiceType).ServiceTypeID;
+            // int packageTypeID = db.PackageTypes.SingleOrDefault(s => s.Type == PackageType).PackageTypeID;
+            IEnumerable<ServicePackageFee> Fees = db.ServicePackageFees.Include(c => c.PackageType).Include(c => c.ServiceType);
+            IEnumerable<PakageTypeSize> Sizes = db.PakageTypeSizes.Include(c => PackageType);
+            double minimumFee = 0;
+            double Fee = 0;
+            foreach (var fee in Fees)
+            {
+                if (fee.ServiceType.Type == ServiceType && fee.PackageType.Type == PackageType)
+                {
+                    minimumFee = (double)fee.MinimumFee;
+                    Fee = (double)fee.Fee;
+                }
+            }
+            string weightLimit = "kg";
+            foreach (var size in Sizes)
+            {
+                if (size.PackageType.Type == PackageType)
+                {
+                    weightLimit = size.weightLimit;
+                }
+            }
             double HKDRate = db.Currencies.SingleOrDefault(s => s.CurrencyCode == "HKD").ExchangeRate;
             double MOPRate = db.Currencies.SingleOrDefault(s => s.CurrencyCode == "MOP").ExchangeRate;
             double TWDRate = db.Currencies.SingleOrDefault(s => s.CurrencyCode == "TWD").ExchangeRate;
@@ -139,19 +161,41 @@ namespace SinExWebApp20256461.Controllers
             cost.Destination = Destination;
             cost.ServiceType = ServiceType;
             cost.PackageType = PackageType;
-            cost.weights = weights;
+            if (weights == null)
+            {
+                weights = 0;
+            }
+            cost.weights = (int)weights;
+            if (ServiceType == null || PackageType == null || weights == null)
+            {
+                cost.CNYcost = 0;
+                cost.HKDcost = 0;
+                cost.MOPcost = 0;
+                cost.TWDcost = 0;
+                return View(cost);
+            }
             if (PackageType == "Envelope")
             {
                 cost.CNYcost = Fee;
                 cost.HKDcost = Fee * HKDRate;
                 cost.MOPcost = Fee * MOPRate;
-                cost.TYDcost = Fee * TWDRate;
+                cost.TWDcost = Fee * TWDRate;
             }
             else
             {
                 int weightLimitLength = weightLimit.Length - 2;
-                int intWeightLimit = Int32.Parse(weightLimit.Substring(0, weightLimitLength));
-                double price = weights * Fee;
+                if (weightLimitLength < 0)
+                {
+                    weightLimitLength = 0;
+                }
+                string weightSubString = weightLimit.Substring(0, weightLimitLength);
+                int intWeightLimit = 0;
+                if (weightSubString.Length > 0)
+                {
+                    intWeightLimit = Int32.Parse(weightSubString);
+                }
+                
+                double price = (int)weights * Fee;
                 if (weights > intWeightLimit)
                 {
                     price += 500;
@@ -163,7 +207,7 @@ namespace SinExWebApp20256461.Controllers
                 cost.CNYcost = price;
                 cost.HKDcost = price * HKDRate;
                 cost.MOPcost = price * MOPRate;
-                cost.TYDcost = price * TWDRate;
+                cost.TWDcost = price * TWDRate;
             }
             return View(cost);
         }
