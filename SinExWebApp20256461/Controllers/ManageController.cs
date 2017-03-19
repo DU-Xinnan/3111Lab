@@ -15,7 +15,7 @@ namespace SinExWebApp20256461.Controllers
     {
         private ApplicationSignInManager _signInManager;
         private ApplicationUserManager _userManager;
-
+        private SinExWebApp20256461Context db = new SinExWebApp20256461Context();
         public ManageController()
         {
         }
@@ -82,8 +82,15 @@ namespace SinExWebApp20256461.Controllers
                 : "";
 
             var userId = User.Identity.GetUserId();
+            string accountNumber = "";
+            if (User.IsInRole("Customer"))
+            {
+                accountNumber = db.ShippingAccounts.SingleOrDefault(c => c.UserName == User.Identity.Name).ShippingAccountNumber;
+            }
+           
             var model = new IndexViewModel
             {
+                ShippingAccountNumber = accountNumber,
                 HasPassword = HasPassword(),
                 PhoneNumber = await UserManager.GetPhoneNumberAsync(userId),
                 TwoFactor = await UserManager.GetTwoFactorEnabledAsync(userId),
