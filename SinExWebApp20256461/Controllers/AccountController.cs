@@ -172,14 +172,20 @@ namespace SinExWebApp20256461.Controllers
                     if (roleResult.Succeeded)
                     {
                         // Create a shipping account for the customer.
+                        int id = db.ShippingAccounts.Count() + 1;
+                        string strID = id.ToString().PadLeft(12, '0');
                         if (model.PersonalInformation != null)
                         {
                             model.PersonalInformation.UserName = user.UserName;
+                            model.PersonalInformation.ShippingAccountNumber = strID;
+                            model.PersonalInformation.ShippingAccountId = id;
                             db.ShippingAccounts.Add(model.PersonalInformation);
                         }
                         else
                         {
                             model.BusinessInformation.UserName = user.UserName;
+                            model.BusinessInformation.ShippingAccountNumber = strID;
+                            model.BusinessInformation.ShippingAccountId = id;
                             db.ShippingAccounts.Add(model.BusinessInformation);
                         }
                         db.SaveChanges();

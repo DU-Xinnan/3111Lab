@@ -46,7 +46,7 @@ namespace SinExWebApp20256461.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var query =  db.PersonalShippingAccounts.SingleOrDefault(c => c.UserName == User.Identity.Name);
-            id = query.ShippingAccountID;
+            id = query.ShippingAccountId;
             PersonalShippingAccount personalShippingAccount = (PersonalShippingAccount)db.ShippingAccounts.Find(id);
             if (personalShippingAccount == null)
             {
@@ -62,7 +62,7 @@ namespace SinExWebApp20256461.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             var query = db.PersonalShippingAccounts.SingleOrDefault(c => c.UserName == User.Identity.Name);
-            id = query.ShippingAccountID;
+            id = query.ShippingAccountId;
             PersonalShippingAccount personalShippingAccount = (PersonalShippingAccount)db.ShippingAccounts.Find(id);
             if (personalShippingAccount == null)
             {

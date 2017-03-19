@@ -67,6 +67,7 @@ namespace SinExWebApp20256461.Models
         [Required]
         [Display(Name = "User name")]
         [StringLength(10, MinimumLength = 6)]
+        [RegularExpression(@"^[A-Za-z0-9]+$", ErrorMessage ="username shuld be only char and digit between 6 - 10 digit")]
         public string UserName { get; set; }
 
         [Display(Name = "Email")]
@@ -76,6 +77,7 @@ namespace SinExWebApp20256461.Models
         [Required]
         [StringLength(15, ErrorMessage = "The {0} must be at least {2} characters long.", MinimumLength = 8)]
         [DataType(DataType.Password)]
+        [RegularExpression(@".*[^A-Za-z0-9].*[^A-Za-z0-9].*", ErrorMessage = "We neeed at least two non-alphanumeriac digits.")]
         [Display(Name = "Password")]
         public string Password { get; set; }
 

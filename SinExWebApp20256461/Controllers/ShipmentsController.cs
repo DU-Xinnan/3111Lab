@@ -24,8 +24,22 @@ namespace SinExWebApp20256461.Controllers
             ViewBag.CurrentSort = sortOrder;
             int pageSize = 5;
             int pageNumber = (page ?? 1);
+            if (ShippingAccountId == null)
+            {
+                ShippingAccountId = 0;
+            }
             // Populate the ShippingAccountId dropdown list.
             shipmentSearch.Shipment.ShippingAccounts = PopulateShippingAccountsDropdownList().ToList();
+            if (User.IsInRole("Customer"))
+            {
+                shipmentSearch.Shipment.ShippingAccounts = PopulateCustomerShippingAccountsDropdownList().ToList();
+                //var currShippingAccount = db.Shipments.Where(a => a.ShippingAccount.UserName == User.Identity.Name).Select(a => a.ShippingAccountId).Distinct().ToList();
+                //if (!currShippingAccount.Contains((int)ShippingAccountId))
+                //{
+                   // shipmentSearch.Shipments = new ShipmentsListViewModel().ToPagedList;
+                    //return View(shipmentSearch);
+                //}
+            }
             ViewBag.CurrentShippingAccountId = ShippingAccountId;
             ViewBag.CurrentShippingStartDate = ShippedStartDate;
             ViewBag.CurrentShippingEndDate = ShippedEndDate;
@@ -123,7 +137,7 @@ namespace SinExWebApp20256461.Controllers
             shipmentSearch.Shipments = shipmentQuery.ToPagedList(pageNumber, pageSize);
             return View(shipmentSearch);
         }
-        public ActionResult getCost(string Origin, string Destination, string ServiceType, string PackageType, int? weights)
+        public ActionResult getCost(string Origin, string Destination, string ServiceType, string PackageType, string Size, int? weights)
         {
             var cost = new CostViewModel();
             // cost.PackageTypes = (new SelectList(db.PackageTypes.Select(a => a.Type).Distinct())).ToList();
@@ -132,6 +146,7 @@ namespace SinExWebApp20256461.Controllers
             cost.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
             cost.Origins = db.Destinations.Select(a => a.City).Distinct().ToList();
             cost.Destinations = db.Destinations.Select(a => a.City).Distinct().ToList();
+            cost.Sizes = db.PakageTypeSizes.Select(a => a.size).Distinct().ToList();
             // int serviceTypeID = db.ServiceTypes.SingleOrDefault(s => s.Type == ServiceType).ServiceTypeID;
             // int packageTypeID = db.PackageTypes.SingleOrDefault(s => s.Type == PackageType).PackageTypeID;
             IEnumerable<ServicePackageFee> Fees = db.ServicePackageFees.Include(c => c.PackageType).Include(c => c.ServiceType);
@@ -146,14 +161,6 @@ namespace SinExWebApp20256461.Controllers
                     Fee = (double)fee.Fee;
                 }
             }
-            string weightLimit = "kg";
-            foreach (var size in Sizes)
-            {
-                if (size.PackageType.Type == PackageType)
-                {
-                    weightLimit = size.weightLimit;
-                }
-            }
             double HKDRate = db.Currencies.SingleOrDefault(s => s.CurrencyCode == "HKD").ExchangeRate;
             double MOPRate = db.Currencies.SingleOrDefault(s => s.CurrencyCode == "MOP").ExchangeRate;
             double TWDRate = db.Currencies.SingleOrDefault(s => s.CurrencyCode == "TWD").ExchangeRate;
@@ -161,12 +168,21 @@ namespace SinExWebApp20256461.Controllers
             cost.Destination = Destination;
             cost.ServiceType = ServiceType;
             cost.PackageType = PackageType;
+            string weightLimit = "kg";
+            foreach (var size in Sizes)
+            {
+                if (size.PackageType.Type == PackageType && size.size == Size)
+                {
+                    weightLimit = size.weightLimit;
+                }
+            }
+
             if (weights == null)
             {
                 weights = 0;
             }
             cost.weights = (int)weights;
-            if (ServiceType == null || PackageType == null || weights == null)
+            if (ServiceType == null || PackageType == null)
             {
                 cost.CNYcost = 0;
                 cost.HKDcost = 0;
@@ -181,6 +197,18 @@ namespace SinExWebApp20256461.Controllers
                 cost.MOPcost = Fee * MOPRate;
                 cost.TWDcost = Fee * TWDRate;
             }
+            else if (PackageType == "Customer")
+            {
+                double price = (int)weights * Fee;
+                if (price < minimumFee)
+                {
+                    price = minimumFee;
+                }
+                cost.CNYcost = price;
+                cost.HKDcost = price * HKDRate;
+                cost.MOPcost = price * MOPRate;
+                cost.TWDcost = price * TWDRate;
+            }
             else
             {
                 int weightLimitLength = weightLimit.Length - 2;
@@ -192,9 +220,23 @@ namespace SinExWebApp20256461.Controllers
                 int intWeightLimit = 0;
                 if (weightSubString.Length > 0)
                 {
-                    intWeightLimit = Int32.Parse(weightSubString);
+                    if (weightLimit == "Not applicable")
+                    {
+                        intWeightLimit = 2147483647;
+                    }
+                    else
+                    {
+                        intWeightLimit = Int32.Parse(weightSubString);
+                    }
                 }
-                
+                else
+                {
+                    cost.CNYcost = 0;
+                    cost.HKDcost = 0;
+                    cost.MOPcost = 0;
+                    cost.TWDcost = 0;
+                    return View(cost);
+                }
                 double price = (int)weights * Fee;
                 if (weights > intWeightLimit)
                 {
@@ -215,6 +257,12 @@ namespace SinExWebApp20256461.Controllers
         {
             // TODO: Construct the LINQ query to retrieve the unique list of shipping account ids.
             var shippingAccountQuery = db.Shipments.Select(a => a.ShippingAccountId).Distinct().OrderBy(c => c);
+            return new SelectList(shippingAccountQuery);
+        }
+        private SelectList PopulateCustomerShippingAccountsDropdownList()
+        {
+            // TODO: Construct the LINQ query to retrieve the unique list of shipping account ids.
+            var shippingAccountQuery = db.Shipments.Where(a => a.ShippingAccount.UserName == User.Identity.Name).Select(a => a.ShippingAccountId).Distinct().OrderBy(c => c);
             return new SelectList(shippingAccountQuery);
         }
         // GET: Shipments
