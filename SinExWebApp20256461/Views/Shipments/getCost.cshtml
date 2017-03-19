@@ -1,0 +1,34 @@
+﻿@model SinExWebApp20256461.ViewModels.CostViewModel
+
+@{
+    ViewBag.Title = "COST";
+}
+
+<h2>Cost</h2>
+@Html.Partial("_getCostsSearchPartial", Model)
+@if (Model.CNYcost == 0)
+{
+    <h1>Please select valid selection</h1>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th>CNY</th>
+            <th>@Html.DisplayFor(Model => Model.CNYcost)</th>
+        </tr>
+        <tr>
+            <th>HKD</th>
+            <th>@Html.DisplayFor(Model => Model.HKDcost)</th>
+        </tr>
+        <tr>
+            <th>MOP</th>
+            <th>@Html.DisplayFor(Model => Model.MOPcost)</th>
+        </tr>
+        <tr>
+            <th>TWD</th>
+            <th>@Html.DisplayFor(Model => Model.TWDcost)</th>
+        </tr>
+    </table>
+}
+

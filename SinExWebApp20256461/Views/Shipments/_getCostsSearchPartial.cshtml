@@ -1,0 +1,16 @@
+﻿@model SinExWebApp20256461.ViewModels.CostViewModel
+@using (Html.BeginForm("getCost", "Shipments", FormMethod.Get))
+{
+    @Html.LabelFor(a => a.Origins, "Origin")
+    @Html.DropDownListFor(a => a.Origin, new SelectList(Model.Origins), "please Select")
+    @Html.LabelFor(a => a.Destinations, "Destination")
+    @Html.DropDownListFor(a => a.Destination, new SelectList(Model.Destinations), "please Select")
+    @Html.LabelFor(a => a.ServiceType, "Service Type")
+    @Html.DropDownListFor(a => a.ServiceType, new SelectList(Model.ServiceTypes), "please Select")
+    @Html.LabelFor(a => a.PackageType, "Package Type")
+    @Html.DropDownListFor(a => a.PackageType, new SelectList(Model.PackageTypes), "please Select")
+    @Html.LabelFor(a => a.Size, "Package Size")
+    @Html.DropDownListFor(a => a.Size, new SelectList(Model.Sizes), "please Select")
+    @Html.TextBoxFor(a => a.weights)
+    <input type="submit" value="Search" />
+}
