@@ -10,7 +10,7 @@ using SinExWebApp20256461.Models;
 
 namespace SinExWebApp20256461.Controllers
 {
-    public class ServicePackageFeesController : Controller
+    public class ServicePackageFeesController : BaseController
     {
         private SinExWebApp20256461Context db = new SinExWebApp20256461Context();
 

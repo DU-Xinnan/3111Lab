@@ -204,6 +204,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\BusinessShippingAccountsController.cs" />
     <Compile Include="Controllers\CurrenciesController.cs" />
     <Compile Include="Controllers\DestinationsController.cs" />
@@ -239,6 +240,7 @@
     <Compile Include="Startup.cs" />
     <Compile Include="ViewModels\CostViewModel.cs" />
     <Compile Include="ViewModels\RegisterCustomerViewModel.cs" />
+    <Compile Include="ViewModels\ServicePackageFeeViewModel.cs" />
     <Compile Include="ViewModels\ShipmentsSearchViewModel.cs" />
     <Compile Include="ViewModels\ShipmentsListViewModel.cs" />
     <Compile Include="ViewModels\ShipmentsReportViewModel.cs" />
@@ -362,6 +364,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

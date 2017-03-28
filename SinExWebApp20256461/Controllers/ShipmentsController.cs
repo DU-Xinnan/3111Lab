@@ -11,7 +11,7 @@ using SinExWebApp20256461.ViewModels;
 using X.PagedList;
 namespace SinExWebApp20256461.Controllers
 {
-    public class ShipmentsController : Controller
+    public class ShipmentsController : BaseController
     {
         private SinExWebApp20256461Context db = new SinExWebApp20256461Context();
         // GET: Shipments/GenerateHistoryReport
@@ -193,9 +193,9 @@ namespace SinExWebApp20256461.Controllers
             if (PackageType == "Envelope")
             {
                 cost.CNYcost = Fee;
-                cost.HKDcost = Fee * HKDRate;
-                cost.MOPcost = Fee * MOPRate;
-                cost.TWDcost = Fee * TWDRate;
+                cost.HKDcost = (double)ConvertCurrency("HKD", (decimal)Fee);
+                cost.MOPcost = (double)ConvertCurrency("MOP", (decimal)Fee); ;
+                cost.TWDcost = (double)ConvertCurrency("TWD", (decimal)Fee); ;
             }
             else if (PackageType == "Customer")
             {
@@ -205,9 +205,9 @@ namespace SinExWebApp20256461.Controllers
                     price = minimumFee;
                 }
                 cost.CNYcost = price;
-                cost.HKDcost = price * HKDRate;
-                cost.MOPcost = price * MOPRate;
-                cost.TWDcost = price * TWDRate;
+                cost.HKDcost = (double)ConvertCurrency("HKD", (decimal)price);
+                cost.MOPcost = (double)ConvertCurrency("MOP", (decimal)price);
+                cost.TWDcost = (double)ConvertCurrency("TWD", (decimal)price);
             }
             else
             {
@@ -247,9 +247,9 @@ namespace SinExWebApp20256461.Controllers
                     price = minimumFee;
                 }
                 cost.CNYcost = price;
-                cost.HKDcost = price * HKDRate;
-                cost.MOPcost = price * MOPRate;
-                cost.TWDcost = price * TWDRate;
+                cost.HKDcost = (double)ConvertCurrency("HKD", (decimal)price);
+                cost.MOPcost = (double)ConvertCurrency("MOP", (decimal)price);
+                cost.TWDcost = (double)ConvertCurrency("TWD", (decimal)price);
             }
             return View(cost);
         }

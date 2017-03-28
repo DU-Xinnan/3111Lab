@@ -25,6 +25,10 @@
         </dd>
         @if (ViewBag.customerType == "Personal")
         {
+            <dt>Account Number</dt>
+                <dd>
+                    @Html.DisplayFor(Model => Model.ShippingAccountNumber)
+                </dd>
             <dt>Display Personal Information</dt>
             <dd>
                 @Html.ActionLink("Display Personal", "Details", "PersonalShippingAccounts")
@@ -36,6 +40,10 @@
         }
         else if (ViewBag.customerType == "Business")
         {
+            <dt>Account Number</dt>
+                        <dd>
+                            @Html.DisplayFor(Model => Model.ShippingAccountNumber)
+                        </dd>
             <dt>Display Business Information</dt>
             <dd>
                 @Html.ActionLink("Display Business", "Details", "BusinessShippingAccounts")
