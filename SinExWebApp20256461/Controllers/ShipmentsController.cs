@@ -9,6 +9,11 @@ using System.Web.Mvc;
 using SinExWebApp20256461.Models;
 using SinExWebApp20256461.ViewModels;
 using X.PagedList;
+using Invoicer.Helpers;
+using Invoicer.Models;
+using Invoicer.Services.Impl;
+using Invoicer.Services;
+
 namespace SinExWebApp20256461.Controllers
 {
     public class ShipmentsController : BaseController
@@ -137,8 +142,58 @@ namespace SinExWebApp20256461.Controllers
             shipmentSearch.Shipments = shipmentQuery.ToPagedList(pageNumber, pageSize);
             return View(shipmentSearch);
         }
+
+        public void SendInvoice(int? WaybillId)
+        {
+            var shipment = db.Shipments.SingleOrDefault(s => s.WaybillId == WaybillId);
+            SinExWebApp20256461.Models.Invoice invoiceShipment = null;
+            SinExWebApp20256461.Models.Invoice invoiceDutyAndTax = null;
+            foreach (var invoice in shipment.Invoices)
+            {
+                if (invoice.Type == "Shipment")
+                    invoiceShipment = invoice;
+                else if (invoice.Type == "Duty and Tax")
+                    invoiceDutyAndTax = invoice;
+            }
+
+            bool seperateInvoice = (invoiceShipment.ShippingAccountNumber != invoiceDutyAndTax.ShippingAccountNumber);
+
+            if (seperateInvoice)
+            {
+
+            }
+
+            string referenceNumber = shipment.ReferenceNumber;
+            string shippingAccountNumber = shipment.ShippingAccount.ShippingAccountNumber;
+            
+
+            string[] CompanyAddress = { "Sino Express LLC", "HKUST" };
+            string[] ClientAddress = { "Mr. X", "Shipping Account #: "+ };
+            string WaybillNumber = WaybillId.ToString().PadLeft(16, '0');
+            new InvoicerApi(SizeOption.A4, OrientationOption.Landscape, "HKD ")
+                .TextColor("#CC0000")
+                .BackColor("#FFD6CC")
+                .Reference(WaybillNumber)
+                //.Image(@"vodafone.jpg", 125, 27)
+                .Company(Address.Make("FROM", CompanyAddress))
+                .Client(Address.Make("BILLING TO", ClientAddress))
+                .Items(new List<ItemRow> {
+                    ItemRow.Make("Package 1", "Service Type: ", (decimal)1, 20, (decimal)360.00, (decimal)360.00),
+                })
+                .Totals(new List<TotalRow> {
+                    TotalRow.Make("Sub Total", (decimal)360.00),
+                    TotalRow.Make("Total", (decimal)360.00, true),
+                })
+                .Details(new List<DetailRow> {
+                    DetailRow.Make("PAYMENT INFORMATION", "Make all cheques payable to Sino Express LLC.", "", "If you have any questions concerning this invoice, contact us at comp3111_team108@cse.ust.hk.", "", "Thank you for your business.")
+                })
+                .Save(Server.MapPath("~/Invoices") + "/"+ WaybillNumber + ".pdf");
+        }
+
         public ActionResult getCost(string Origin, string Destination, string ServiceType, string PackageType, string Size, int? weights)
         {
+            SendInvoice(1);
+
             var cost = new CostViewModel();
             // cost.PackageTypes = (new SelectList(db.PackageTypes.Select(a => a.Type).Distinct())).ToList();
             // cost.ServiceTypes = (new SelectList(db.ServiceTypes.Select(a => a.Type).Distinct())).ToList();

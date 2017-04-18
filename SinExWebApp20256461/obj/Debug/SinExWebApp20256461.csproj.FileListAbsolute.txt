@@ -418,3 +418,9 @@ C:\Users\swuai\Desktop\COMP3111-lab\SinExWebApp20256461\bin\Microsoft.Owin.Secur
 C:\Users\swuai\Desktop\COMP3111-lab\SinExWebApp20256461\obj\Debug\SinExWebApp20256461.csprojResolveAssemblyReference.cache
 C:\Users\swuai\Desktop\COMP3111-lab\SinExWebApp20256461\obj\Debug\SinExWebApp20256461.dll
 C:\Users\swuai\Desktop\COMP3111-lab\SinExWebApp20256461\obj\Debug\SinExWebApp20256461.pdb
+C:\Users\swuai\Desktop\COMP3111-lab\SinExWebApp20256461\bin\Invoicer.dll
+C:\Users\swuai\Desktop\COMP3111-lab\SinExWebApp20256461\bin\MigraDoc.DocumentObjectModel.dll
+C:\Users\swuai\Desktop\COMP3111-lab\SinExWebApp20256461\bin\MigraDoc.Rendering.dll
+C:\Users\swuai\Desktop\COMP3111-lab\SinExWebApp20256461\bin\MigraDoc.RtfRendering.dll
+C:\Users\swuai\Desktop\COMP3111-lab\SinExWebApp20256461\bin\PdfSharp.Charting.dll
+C:\Users\swuai\Desktop\COMP3111-lab\SinExWebApp20256461\bin\PdfSharp.dll
