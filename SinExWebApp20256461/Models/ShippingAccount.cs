@@ -68,5 +68,9 @@ namespace SinExWebApp20256461.Models
         [StringLength(30)]
         [RegularExpression(@"^[-!#$%&'*+/0-9=?A-Z^_a-z{|}~](\.?[-!#$%&'*+/0-9=?A-Z^_a-z{|}~])*@[a-zA-Z](-?[a-zA-Z0-9])*(\.[a-zA-Z](-?[a-zA-Z0-9])*)+$", ErrorMessage = "Please enter a valid email")]
         public virtual string EmailAddress { get; set; }
+
+        public virtual int SavedAddressID { get; set; }
+        public virtual ICollection<SavedAddress> SavedAddresses { get; set; }
+        // public virtual ICollection<Invoice> Invoices { get; set; }
     }
 }

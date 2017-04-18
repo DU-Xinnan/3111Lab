@@ -9,10 +9,10 @@ namespace SinExWebApp20256461.Models
     [Table("Destination")]
     public class Destination
     {
-        public int DestinationID { get; set; }
-        public string City { get; set; }
-        public string ProvinceCode { get; set; }
-        public string CurrencyCode { get; set; }
-        public Currency Currency { get; set; }
+        public virtual int DestinationID { get; set; }
+        public virtual string City { get; set; }
+        public virtual string ProvinceCode { get; set; }
+        public virtual string CurrencyCode { get; set; }
+        public virtual Currency Currency { get; set; }
     }
 }

@@ -10,9 +10,9 @@ namespace SinExWebApp20256461.Models
     {
         [Required]
         [StringLength(35)]
-        public string FirstName { set; get; }
+        public virtual string FirstName { set; get; }
         [Required]
         [StringLength(35)]
-        public string LastName { set; get; }
+        public virtual string LastName { set; get; }
     }
 }
