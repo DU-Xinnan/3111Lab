@@ -9,10 +9,12 @@ using System.Web.Mvc;
 using SinExWebApp20256461.Models;
 using SinExWebApp20256461.ViewModels;
 using X.PagedList;
+using System.Windows.Forms;
+
 namespace SinExWebApp20256461.Controllers
 {
     public class ShipmentsController : BaseController
-    {
+    {  
         private SinExWebApp20256461Context db = new SinExWebApp20256461Context();
         // GET: Shipments/GenerateHistoryReport
         [Authorize(Roles = "Employee, Customer")]
@@ -289,7 +291,10 @@ namespace SinExWebApp20256461.Controllers
         // GET: Shipments/Create
         public ActionResult Create()
         {
-            return View();
+            var shipment = new CreateShipmentViewModel();
+            shipment.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
+            shipment.PackageTypes = db.PackageTypes.Select(a => a.Type).Distinct().ToList();
+            return View(shipment);
         }
 
         // POST: Shipments/Create
@@ -297,17 +302,109 @@ namespace SinExWebApp20256461.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "WaybillId,ReferenceNumber,ServiceType,ShippedDate,DeliveredDate,RecipientName,NumberOfPackages,Origin,Destination,Status,ShippingAccountId")] Shipment shipment)
+        // public ActionResult Create([Bind(Include = "Shipment.ReferenceNumber,Shipment.Origin,Shipment.Destination,ServiceType,Shipment.IfSendEmail,PackageType,Description,Value,WeightEstimated,Recipient.FullName,Recipient.CompanyName,Recipient.DeliveryAddress,Recipient.EmailAddress,Recipient.PhoneNumber,ShipmentPayer,TaxPayer")] Shipment shipment)
+        public ActionResult Create(String ReferenceNumber, string Origin, string Destination, string ServiceType, string PackageType, string Description, string Value, string WeightEstimated, string FullName, string CompanyName, string DeliveryAddress, string EmailAddress, string PhoneNumber, string ShipmentPayerNumber, string taxPayerNumber, string IfSendEmail)
         {
             if (ModelState.IsValid)
             {
+                var shipment = new Shipment();
+
+                shipment.ReferenceNumber = ReferenceNumber;
+                shipment.ServiceType = ServiceType;
+                shipment.RecipientName = FullName;
+                shipment.NumberOfPackages = 1;
+                shipment.Origin = Origin;
+                shipment.Destination = Destination;
+                shipment.Status = "pending";
+
+                var recipient = new Recipient();
+                recipient.FullName = FullName;
+                recipient.CompanyName = CompanyName;
+                recipient.DeliveryAddress = DeliveryAddress;
+                recipient.EmailAddress = EmailAddress;
+                recipient.PhoneNumber = PhoneNumber;
+                shipment.Recipient = recipient;
+
+                var package = new Package();
+                package.Description = Description;
+                package.WeightEstimated = Convert.ToDouble(WeightEstimated);
+                package.Value = Convert.ToDouble(Value);
+
+                var shippingAccount = (from s in db.ShippingAccounts
+                                      where s.UserName == User.Identity.Name
+                                      select s).First();
+                shipment.ShippingAccountId = shippingAccount.ShippingAccountId;
+                package.ShippingAccountNumber = shippingAccount.ShippingAccountNumber;
+
+                shipment.Packages = new List<Package>();
+                shipment.Packages.Add(package);
+
+                if (IfSendEmail == "Yes")
+                {
+                    shipment.IfSendEmail = true;
+                }
+                else
+                {
+                    shipment.IfSendEmail = false;
+                }
+
+                var shipmentPayer = (from s in db.ShippingAccounts
+                                     where s.ShippingAccountNumber == ShipmentPayerNumber
+                                     select s).FirstOrDefault();
+
+                var taxPayer = (from s in db.ShippingAccounts
+                                     where s.ShippingAccountNumber == taxPayerNumber
+                                select s).FirstOrDefault();
+                if (shipmentPayer == null || taxPayer == null)
+                {
+                    return RedirectToAction("Index");
+                }
+
+
+                shipment.Invoices = new List<Invoice>();
+                var shipmentInvoice = new Invoice();
+                shipmentInvoice.Type = "shipment";
+                shipmentInvoice.ShippingAccountNumber = ShipmentPayerNumber;
+                shipment.Invoices.Add(shipmentInvoice);
+
+                var taxInvoice = new Invoice();
+                taxInvoice.Type = "tax_duty";
+                taxInvoice.ShippingAccountNumber = taxPayerNumber;
+                shipment.Invoices.Add(taxInvoice);
+
+
+                shipment.ShippedDate = DateTime.Now;
+                shipment.DeliveredDate = DateTime.Now;
+                shipment.PickupID = 0;
+
+                var pickup = new Pickup();
+                pickup.Location = "";
+                pickup.Date = DateTime.Now;
+                pickup.Type = "";
+
+                shipment.Pickup = pickup;
+
                 db.Shipments.Add(shipment);
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
 
-            return View(shipment);
+            return View();
         }
+        /*
+        public ActionResult AddPackage()
+        {
+            TextBox description = new TextBox();
+            description
+            var newTextBox = document.createElement("INPUT");
+            newTextBox.type = "text";
+            newTextBox.id = "newTextBox_1";
+            document.getElementById("someDivWithinYourForm").appendChild(newTextBox);
+
+            return View();
+        }
+        */
 
         // GET: Shipments/Edit/5
         public ActionResult Edit(int? id)
