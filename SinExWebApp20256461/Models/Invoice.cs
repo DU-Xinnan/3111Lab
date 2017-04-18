@@ -16,7 +16,6 @@ namespace SinExWebApp20256461.Models
         // public virtual ShippingAccount ShippingAccount { get; set; }
         public virtual string ShippingAccountNumber { get; set; }
         public virtual double TotalAmountPayable { get; set; }
-
         public virtual int WaybillId { get; set; }
         public virtual Shipment Shipment { get; set; }
     }
