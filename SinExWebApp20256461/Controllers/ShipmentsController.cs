@@ -9,11 +9,22 @@ using System.Web.Mvc;
 using SinExWebApp20256461.Models;
 using SinExWebApp20256461.ViewModels;
 using X.PagedList;
+using System.Net.Mail;
+
 namespace SinExWebApp20256461.Controllers
 {
     public class ShipmentsController : BaseController
     {
         private SinExWebApp20256461Context db = new SinExWebApp20256461Context();
+
+
+
+
+
+
+
+
+
         // GET: Shipments/GenerateHistoryReport
         [Authorize(Roles = "Employee, Customer")]
         public ActionResult GenerateHistoryReport(int? ShippingAccountId, string sortOrder, int? page, DateTime? ShippedStartDate, DateTime? ShippedEndDate)
