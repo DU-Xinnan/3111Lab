@@ -169,7 +169,7 @@ namespace SinExWebApp20256461.Controllers
             string shipmentPayerCurrencyCode = db.Destinations.SingleOrDefault(s => s.ProvinceCode.Equals(shipmentPayerShippingAccount.ProvinceCode)).CurrencyCode + " ";
 
             // Shipment Payer Info
-            string[] shipmentPayerInfo = new string[4];
+            string[] shipmentPayerInfo = new string[5];
             if (shipmentPayerShippingAccount is BusinessShippingAccount)
             {
                 var shipmentPayerBusinessShippingAccount = (BusinessShippingAccount)shipmentPayerShippingAccount;
@@ -184,6 +184,7 @@ namespace SinExWebApp20256461.Controllers
             shipmentPayerInfo[2] = "Credit Card Type: " + shipmentPayerShippingAccount.CardType;
             string shipmentPayerCreditCardNumber = shipmentPayerShippingAccount.CardNumber;
             shipmentPayerInfo[3] = "Credit Card Number (Last Four Digits): " + shipmentPayerCreditCardNumber.Substring(shipmentPayerCreditCardNumber.Length - 4);
+            shipmentPayerInfo[4] = "Authorization Code: " + shipmentInvoice.AuthenticationCode;
 
             // Shipment Info
             string waybillNumber = WaybillId.ToString().PadLeft(16, '0');
@@ -261,7 +262,7 @@ namespace SinExWebApp20256461.Controllers
                 string dutyAndTaxPayerCurrencyCode = db.Destinations.SingleOrDefault(s => s.ProvinceCode.Equals(dutyAndTaxPayerShippingAccount.ProvinceCode)).CurrencyCode + " ";
 
                 // Duty and Tax Payer Info
-                string[] dutyAndTaxPayerInfo = new string[4];
+                string[] dutyAndTaxPayerInfo = new string[5];
                 if (dutyAndTaxPayerShippingAccount is BusinessShippingAccount)
                 {
                     var dutyAndTaxPayerBusinessShippingAccount = (BusinessShippingAccount)dutyAndTaxPayerShippingAccount;
@@ -276,6 +277,7 @@ namespace SinExWebApp20256461.Controllers
                 dutyAndTaxPayerInfo[2] = "Credit Card Type: " + dutyAndTaxPayerShippingAccount.CardType;
                 string dutyAndTaxPayerCreditCardNumber = dutyAndTaxPayerShippingAccount.CardNumber;
                 dutyAndTaxPayerInfo[3] = "Credit Card Number (Last Four Digits): " + dutyAndTaxPayerCreditCardNumber.Substring(dutyAndTaxPayerCreditCardNumber.Length - 4);
+                dutyAndTaxPayerInfo[4] = "Authorization Code: " + dutyAndTaxInvoice.AuthenticationCode;
 
                 // Duty and Tax Invoice
                 new InvoicerApi(SizeOption.A4, OrientationOption.Landscape, dutyAndTaxPayerCurrencyCode)
@@ -345,8 +347,6 @@ namespace SinExWebApp20256461.Controllers
 
         public ActionResult getCost(string Origin, string Destination, string ServiceType, string PackageType, string Size, int? weights)
         {
-            SendInvoice(1);
-
             var cost = new CostViewModel();
             // cost.PackageTypes = (new SelectList(db.PackageTypes.Select(a => a.Type).Distinct())).ToList();
             // cost.ServiceTypes = (new SelectList(db.ServiceTypes.Select(a => a.Type).Distinct())).ToList();
