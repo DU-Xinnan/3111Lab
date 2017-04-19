@@ -444,13 +444,16 @@ namespace SinExWebApp20256461.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(string submit, string ReferenceNumber, string Origin, string Destination, string FullName, string CompanyName, string DeliveryAddress, string EmailAddress, string PhoneNumber, string ServiceType, string IfSendEmail, string ShipmentPayerNumber, string taxPayerNumber, List<string> PackageType, List<string> Description, List<string> Value, List<string> WeightEstimated)
+        public ActionResult Edit(int? id, string submit, string ReferenceNumber, string Origin, string Destination, string FullName, string CompanyName, string DeliveryAddress, string EmailAddress, string PhoneNumber, string ServiceType, string IfSendEmail, string ShipmentPayerNumber, string taxPayerNumber, List<string> PackageType, List<string> Description, List<string> Value, List<string> WeightEstimated)
         {
             if (ModelState.IsValid)
             {
-                Shipment shipment = db.Shipments.Find(ViewBag.waybillId);
+                Shipment shipment = db.Shipments.Find(id);
                 if (submit == "add")
                 {
+                    // CreateShipmentViewModel newViewModel = new CreateShipmentViewModel();
+                    // newViewModel.ReferenceNumber = ReferenceNumber;
+                    // newViewModel.Destination = Destination;
                     shipment.NumberOfPackages += 1;
                     var newPackage = new Package();
                     newPackage.WaybillId = shipment.WaybillId;
