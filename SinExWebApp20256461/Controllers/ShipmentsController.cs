@@ -324,11 +324,16 @@ namespace SinExWebApp20256461.Controllers
                 recipient.EmailAddress = EmailAddress;
                 recipient.PhoneNumber = PhoneNumber;
                 shipment.Recipient = recipient;
+                
 
                 var package = new Package();
                 package.Description = Description;
                 package.WeightEstimated = Convert.ToDouble(WeightEstimated);
                 package.Value = Convert.ToDouble(Value);
+                var packageType = (from s in db.PackageTypes
+                                   where s.Type == PackageType
+                                   select s).First();
+                package.PackageTypeID = packageType.PackageTypeID;
 
                 var shippingAccount = (from s in db.ShippingAccounts
                                       where s.UserName == User.Identity.Name
@@ -351,15 +356,13 @@ namespace SinExWebApp20256461.Controllers
                 var shipmentPayer = (from s in db.ShippingAccounts
                                      where s.ShippingAccountNumber == ShipmentPayerNumber
                                      select s).FirstOrDefault();
-
                 var taxPayer = (from s in db.ShippingAccounts
                                      where s.ShippingAccountNumber == taxPayerNumber
                                 select s).FirstOrDefault();
                 if (shipmentPayer == null || taxPayer == null)
                 {
-                    return RedirectToAction("Index");
+                    return RedirectToAction("Index"); /* To do */
                 }
-
 
                 shipment.Invoices = new List<Invoice>();
                 var shipmentInvoice = new Invoice();
@@ -372,11 +375,10 @@ namespace SinExWebApp20256461.Controllers
                 taxInvoice.ShippingAccountNumber = taxPayerNumber;
                 shipment.Invoices.Add(taxInvoice);
 
-
                 shipment.ShippedDate = DateTime.Now;
                 shipment.DeliveredDate = DateTime.Now;
-                shipment.PickupID = 0;
 
+                /* Todo: maybe delete the default pickup */
                 var pickup = new Pickup();
                 pickup.Location = "";
                 pickup.Date = DateTime.Now;
@@ -384,8 +386,17 @@ namespace SinExWebApp20256461.Controllers
 
                 shipment.Pickup = pickup;
 
+
+                /* Update the database */
+                db.Invoices.Add(taxInvoice);
+                db.Invoices.Add(shipmentInvoice);
+                db.Packages.Add(package);
+                db.Recipients.Add(recipient);
+
                 db.Shipments.Add(shipment);
                 db.SaveChanges();
+
+                ViewBag.waybillId = shipment.WaybillId;
 
                 return RedirectToAction("Index");
             }
@@ -414,11 +425,18 @@ namespace SinExWebApp20256461.Controllers
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
             Shipment shipment = db.Shipments.Find(id);
+
+            var ret = new CreateShipmentViewModel();
+            ret.shipment = db.Shipments.Find(id);
+
+            ret.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
+            ret.PackageTypes = db.PackageTypes.Select(a => a.Type).Distinct().ToList();
+
             if (shipment == null)
             {
                 return HttpNotFound();
             }
-            return View(shipment);
+            return View(ret);
         }
 
         // POST: Shipments/Edit/5

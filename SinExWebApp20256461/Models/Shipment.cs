@@ -13,6 +13,7 @@ namespace SinExWebApp20256461.Models
         [Key]
         public virtual int WaybillId { get; set; }
         public virtual string ReferenceNumber { get; set; }
+
         public virtual string ServiceType { get; set; }
         public virtual DateTime ShippedDate { get; set; }
         public virtual DateTime DeliveredDate { get; set; }

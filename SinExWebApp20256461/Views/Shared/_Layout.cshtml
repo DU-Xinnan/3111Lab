@@ -32,6 +32,10 @@
                             <li>@Html.ActionLink("Service Types", "index", "ServiceTypes")</li>
                             <li>@Html.ActionLink("Fees", "index", "ServicePackageFees")</li>
                             <li>@Html.ActionLink("Currencies", "index", "Currencies")</li>
+                            @if (User.IsInRole("Customer"))
+                            {
+                                <li>@Html.ActionLink("Manage Shipments", "Index", "Shipments")</li>
+                            }
                         </ul>
                     </li>
                     <li>@Html.ActionLink("Cost", "getCost", "Shipments")</li>
@@ -43,10 +47,6 @@
                                 <li>@Html.ActionLink("Shipping History", "GenerateHistoryReport", "Shipments")</li>
                             </ul>
                         </li>
-                    }
-                    @if (User.IsInRole("Customer"))
-                    {
-                        <li>@Html.ActionLink("Create Shipment", "Create", "Shipments")</li>
                     }
                 </ul>
                 @Html.Partial("_LoginPartial")
