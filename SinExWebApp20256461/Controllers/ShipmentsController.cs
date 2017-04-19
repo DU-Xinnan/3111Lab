@@ -160,34 +160,47 @@ namespace SinExWebApp20256461.Controllers
 
             if (seperateInvoice)
             {
+                string[] CompanyAddress = { "Sino Express LLC", "HKUST" };
 
+                // Shipment Invoice
+                string shippingAccountNumberShipment = invoiceShipment.ShippingAccountNumber;
+                var shippingAccountShipment = db.ShippingAccounts.SingleOrDefault(s => s.ShippingAccountNumber.Equals(shippingAccountNumberShipment));
+                string currencyCodeShipment = db.Destinations.SingleOrDefault(s => s.ProvinceCode.Equals(shippingAccountShipment.ProvinceCode)).CurrencyCode;
+                string payerNameShipment = null;
+                if (shippingAccountShipment is BusinessShippingAccount)
+                {
+                    payerNameShipment = (BusinessShippingAccount)shippingAccountShipment.CompanyName;
+                }
+
+                string[] ClientAddressShipment = { payerNameShipment, "Shipping Account #: " + };
+                string WaybillNumber = WaybillId.ToString().PadLeft(16, '0');
+
+                new InvoicerApi(SizeOption.A4, OrientationOption.Landscape, currencyCodeShipment)
+                    .TextColor("#CC0000")
+                    .BackColor("#FFD6CC")
+                    .Reference(WaybillNumber)
+                    //.Image(@"vodafone.jpg", 125, 27)
+                    .Company(Address.Make("FROM", CompanyAddress))
+                    .Client(Address.Make("BILLING TO", ClientAddressShipment))
+                    .Items(new List<ItemRow> {
+                        ItemRow.Make("Package 1", "Service Type: ", (decimal)1, 20, (decimal)360.00, (decimal)360.00),
+                    })
+                    .Totals(new List<TotalRow> {
+                        TotalRow.Make("Sub Total", (decimal)360.00),
+                        TotalRow.Make("Total", (decimal)360.00, true),
+                    })
+                    .Details(new List<DetailRow> {
+                        DetailRow.Make("PAYMENT INFORMATION", "Make all cheques payable to Sino Express LLC.", "", "If you have any questions concerning this invoice, contact us at comp3111_team108@cse.ust.hk.", "", "Thank you for your business.")
+                    })
+                    .Save(Server.MapPath("~/Invoices") + "/" + WaybillNumber + ".pdf");
             }
 
             string referenceNumber = shipment.ReferenceNumber;
             string shippingAccountNumber = shipment.ShippingAccount.ShippingAccountNumber;
             
 
-            string[] CompanyAddress = { "Sino Express LLC", "HKUST" };
-            string[] ClientAddress = { "Mr. X", "Shipping Account #: "+ };
-            string WaybillNumber = WaybillId.ToString().PadLeft(16, '0');
-            new InvoicerApi(SizeOption.A4, OrientationOption.Landscape, "HKD ")
-                .TextColor("#CC0000")
-                .BackColor("#FFD6CC")
-                .Reference(WaybillNumber)
-                //.Image(@"vodafone.jpg", 125, 27)
-                .Company(Address.Make("FROM", CompanyAddress))
-                .Client(Address.Make("BILLING TO", ClientAddress))
-                .Items(new List<ItemRow> {
-                    ItemRow.Make("Package 1", "Service Type: ", (decimal)1, 20, (decimal)360.00, (decimal)360.00),
-                })
-                .Totals(new List<TotalRow> {
-                    TotalRow.Make("Sub Total", (decimal)360.00),
-                    TotalRow.Make("Total", (decimal)360.00, true),
-                })
-                .Details(new List<DetailRow> {
-                    DetailRow.Make("PAYMENT INFORMATION", "Make all cheques payable to Sino Express LLC.", "", "If you have any questions concerning this invoice, contact us at comp3111_team108@cse.ust.hk.", "", "Thank you for your business.")
-                })
-                .Save(Server.MapPath("~/Invoices") + "/"+ WaybillNumber + ".pdf");
+
+            
         }
 
         public ActionResult getCost(string Origin, string Destination, string ServiceType, string PackageType, string Size, int? weights)
