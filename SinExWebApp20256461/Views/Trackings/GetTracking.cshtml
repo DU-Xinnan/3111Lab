@@ -1,0 +1,22 @@
+﻿@model SinExWebApp20256461.ViewModels.TrackingViewModel
+@{
+    ViewBag.Title = "Tracking";
+}
+<h2>Tracking Shipment</h2>
+@using (Html.BeginForm("GetTracking", "Trackings", FormMethod.Get))
+{
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(model => model.WaybillNumber, "Input Waybill Number", htmlAttributes: new { @class = "control-label col-md-2" })
+           
+            @Html.EditorFor(model => model.WaybillNumber, new { htmlAttributes = new { @class = "form-control col-md-4"} })
+            <div class="col-md-2">
+                <input type="submit" value="Search" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+@if (Model.Shipment != null)
+{
+    @Html.Partial("_GetTrackingListPartial", Model)
+}

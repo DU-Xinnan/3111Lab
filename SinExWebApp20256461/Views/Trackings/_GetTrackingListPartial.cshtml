@@ -1,0 +1,76 @@
+﻿@model SinExWebApp20256461.ViewModels.TrackingViewModel
+<div class="row">
+    <div class="col-md-12">
+        <dl class="dl-horizontal">
+            <dt>Waybill Number</dt>
+            <dd>
+                @Html.DisplayFor(Model => Model.Shipment.WaybillNumber)
+            </dd>
+            <dt>Delivered to</dt>
+            <dd>
+                @Html.DisplayFor(Model => Model.Shipment.Recipient.FullName)
+            </dd>
+            <dt>Delivered at</dt>
+            <dd>
+                @Html.DisplayFor(Model => Model.Shipment.Pickup.Location)
+            </dd>
+            <dt>Status</dt>
+            <dd>
+                @Html.DisplayFor(Model => Model.Shipment.Status)
+            </dd>
+            <dt>Service Type</dt>
+            <dd>
+                @Html.DisplayFor(Model => Model.Shipment.ServiceType)
+            </dd>
+            <dt>Package Type</dt>
+            @foreach (var package in Model.Shipment.Packages)
+            {
+                <dd>
+                    @Html.DisplayFor(modelitem => package.PackageType.Type)
+                </dd>
+            }
+            <dt>Weight</dt>
+            @foreach (var package in Model.Shipment.Packages)
+            {
+                <dd>
+                    @Html.DisplayFor(modelitem => package.WeightActual)
+                </dd>
+            }
+        </dl>
+    </div>
+    <div class="col-md-12">
+        <table class="table">
+            <tr>
+                <th>
+                    DateTime
+                </th>
+                <th>
+                    Description
+                </th>
+                <th>
+                    Location
+                </th>
+                <th>
+                    Remarks
+                </th>
+            </tr>
+            @foreach(var tracking in Model.Trackings)
+            {
+                <tr>
+                    <th>
+                        @Html.DisplayFor(modelItem => tracking.DateTime)
+                    </th>
+                    <th>
+                        @Html.DisplayFor(modelItem => tracking.Description)
+                    </th>
+                    <th>
+                        @Html.DisplayFor(modelItem => tracking.Location)
+                    </th>
+                    <th>
+                        @Html.DisplayFor(modelItem => tracking.Remarks)
+                    </th>
+                </tr>
+            }
+        </table>
+    </div>
+</div>

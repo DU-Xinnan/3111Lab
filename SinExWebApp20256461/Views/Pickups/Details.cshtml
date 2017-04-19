@@ -1,0 +1,50 @@
+﻿@model SinExWebApp20256461.Models.Pickup
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>Pickup</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Location)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Location)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Date)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Date)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Type)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Type)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.PickupID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>

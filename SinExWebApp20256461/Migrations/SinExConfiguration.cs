@@ -183,6 +183,22 @@ namespace SinExWebApp20256461.Migrations
                 new Shipment { WaybillId = 24, ReferenceNumber = "", ServiceType = "Ground", ShippedDate = new DateTime(2017, 01, 15), DeliveredDate = new DateTime(2017, 01, 19), RecipientName = "Peter Pang", NumberOfPackages = 3, Origin = "Beijing", Destination = "Lhasa", Status = "Delivered", ShippingAccountId = 9 },
                 new Shipment { WaybillId = 25, ReferenceNumber = "386456", ServiceType = "Same Day", ShippedDate = new DateTime(2017, 01, 05), DeliveredDate = new DateTime(2017, 01, 05), RecipientName = "Jerry Jia", NumberOfPackages = 1, Origin = "Beijing", Destination = "Hangzhou", Status = "Delivered", ShippingAccountId = 9 }
             );*/
+            context.Pickups.AddOrUpdate(
+                p => p.PickupID,
+                new Pickup { PickupID = 1, Date = new DateTime(2016, 11, 12), Location = "Shanghai", Type="Immediate" }
+                );
+            context.Recipients.AddOrUpdate(
+                p => p.RecipientID,
+                new Recipient { RecipientID = 1, FullName = "QI GENGMO", CompanyName = "HKUST", DepartmentName = "CSE", DeliveryAddress="Hall III", PhoneNumber="22222222", EmailAddress="gqi@ust.hk"}
+                );
+            context.Shipments.AddOrUpdate(
+                p => p.WaybillId,
+                new Shipment { WaybillId = 1, ReferenceNumber = "", ServiceType = "Same Day", ShippedDate = new DateTime(2016, 11, 11), DeliveredDate = new DateTime(2016, 11, 11), RecipientName = "Andy Ho", NumberOfPackages = 1, Origin = "Hong Kong", Destination = "Guangzhou", Status = "Delivered", ShippingAccountId = 1, PickupID = 1, RecipientID = 1, WaybillNumber = "0000000000000001" }
+                );
+            context.Trackings.AddOrUpdate(
+                p => p.TrackingID,
+                new Tracking { TrackingID = 1, WaybillId = 1, DateTime = new DateTime(2016, 11, 22, 19, 27, 15), Description="Piacked up", Location="Hong Kong"}
+                );
         }
     }
 }

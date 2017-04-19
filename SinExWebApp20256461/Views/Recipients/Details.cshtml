@@ -1,0 +1,74 @@
+﻿@model SinExWebApp20256461.Models.Recipient
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>Recipient</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.FullName)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.FullName)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.CompanyName)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.CompanyName)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.DepartmentName)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DepartmentName)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.DeliveryAddress)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DeliveryAddress)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.PhoneNumber)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.EmailAddress)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.EmailAddress)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.RecipientID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>

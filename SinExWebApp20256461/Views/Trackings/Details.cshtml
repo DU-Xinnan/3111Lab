@@ -1,0 +1,66 @@
+﻿@model SinExWebApp20256461.Models.Tracking
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Details</title>
+</head>
+<body>
+    <div>
+        <h4>Tracking</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Shipment.ReferenceNumber)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Shipment.ReferenceNumber)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.DateTime)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.DateTime)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Description)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Description)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Location)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Location)
+            </dd>
+    
+            <dt>
+                @Html.DisplayNameFor(model => model.Remarks)
+            </dt>
+    
+            <dd>
+                @Html.DisplayFor(model => model.Remarks)
+            </dd>
+    
+        </dl>
+    </div>
+    <p>
+        @Html.ActionLink("Edit", "Edit", new { id = Model.TrackingID }) |
+        @Html.ActionLink("Back to List", "Index")
+    </p>
+</body>
+</html>

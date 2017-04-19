@@ -44,5 +44,11 @@ namespace SinExWebApp20256461.Models
         public System.Data.Entity.DbSet<SinExWebApp20256461.Models.BusinessShippingAccount> BusinessShippingAccounts { get; set; }
 
         public System.Data.Entity.DbSet<SinExWebApp20256461.ViewModels.CostViewModel> CostViewModels { get; set; }
+
+        public System.Data.Entity.DbSet<SinExWebApp20256461.Models.Tracking> Trackings { get; set; }
+
+        public System.Data.Entity.DbSet<SinExWebApp20256461.Models.Pickup> Pickups { get; set; }
+
+        public System.Data.Entity.DbSet<SinExWebApp20256461.Models.Recipient> Recipients { get; set; }
     }
 }

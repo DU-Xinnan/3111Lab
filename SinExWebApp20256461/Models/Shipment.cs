@@ -12,6 +12,7 @@ namespace SinExWebApp20256461.Models
     {
         [Key]
         public virtual int WaybillId { get; set; }
+        public virtual string WaybillNumber { get; set; }
         public virtual string ReferenceNumber { get; set; }
         public virtual string ServiceType { get; set; }
         public virtual DateTime ShippedDate { get; set; }
@@ -25,11 +26,12 @@ namespace SinExWebApp20256461.Models
         public virtual ShippingAccount ShippingAccount { get; set; }
         public virtual int RecipientID { get; set; }
         public virtual Recipient Recipient { get; set; }
-        //417
+        // 417
         public virtual bool IfSendEmail { get; set; }
         public virtual ICollection<Invoice> Invoices { get; set; }
         public virtual ICollection<Package> Packages { get; set; }
         public virtual int PickupID { get; set; }
         public virtual Pickup Pickup { get; set; }
+        public virtual ICollection<Tracking> Trackings { get; set; }
     }
 }
