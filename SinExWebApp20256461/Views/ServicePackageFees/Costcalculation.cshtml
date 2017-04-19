@@ -13,21 +13,24 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.Origin, "Origin", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.DropDownListFor(a => a.Origin, new SelectList(Model.OriginList), "Select Origin", new { @class = "form-control" })
+                        @Html.DropDownListFor(a => a.Origin, new SelectList(Model.OriginList), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Origin, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(model => model.Destination, "Destination", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.DropDownListFor(a => a.Destination, new SelectList(Model.DestinationList), "Select Destination", new { @class = "form-control" })
+                        @Html.DropDownListFor(a => a.Destination, new SelectList(Model.DestinationList), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Destination, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
                 <div class="form-group">
                     @Html.LabelFor(model => model.ServiceType, htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.DropDownListFor(a => a.ServiceType, new SelectList(Model.ServiceTypesList), "Select ServiceType", new { @class = "form-control" })
+                        @Html.DropDownListFor(a => a.ServiceType, new SelectList(Model.ServiceTypesList), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ServiceType, "", new { @class = "text-danger" })
                     </div>
                 </div>
 
@@ -84,7 +87,7 @@
                 <div class="form-group">
                     @Html.LabelFor(model => model.PackagesTypeSizes[i], "Package Type", htmlAttributes: new { @class = "control-label col-md-2" })
                     <div class="col-md-10">
-                        @Html.DropDownListFor(a => a.PackagesTypeSizes[i], new SelectList(Model.PackageTypesSizeList), "Select Package Type", new { @class = "form-control" })
+                        @Html.DropDownListFor(a => a.PackagesTypeSizes[i], new SelectList(Model.PackageTypesSizeList), new { @class = "form-control" })
                     </div>
                 </div>
                 <div class="form-group">
@@ -104,35 +107,17 @@
     }
     else if (ViewBag.status == "Calculate")
     {
-        <table class="table">
+        <table class="table table-bordered table-striped">
             <tr>
-                <th>
-                    @Html.DisplayNameFor(model => model.Origin)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.Destination)
-                </th>
-                <th>
-                    @Html.DisplayNameFor(model => model.ServiceType)
-                </th>
-                <th>
-                    Package Type & Size
-                </th>
-                <th>
-                    Weight
-                </th>
-                <th>
-                    CNY
-                </th>
-                <th>
-                    HKD
-                </th>
-                <th>
-                    MOD
-                </th>
-                <th>
-                    TWD
-                </th>
+                <th>@Html.DisplayNameFor(model => model.Origin)</th>
+                <th> @Html.DisplayNameFor(model => model.Destination)</th>
+                <th> @Html.DisplayNameFor(model => model.ServiceType)</th>
+                <th>Package Type & Size</th>
+                <th>Weight</th>
+                <th> CNY</th>
+                <th> HKD</th>
+                <th>MOD</th>
+                <th>TWD</th>
              </tr>
             @for(int i = 0; i < Model.NumOfPackages; i += 1)
             {
@@ -149,8 +134,14 @@
                     <th>
                         @Html.DisplayFor(model => model.PackagesTypeSizes[i])
                     </th>
-                    <th>
+                    <th>@if (Model.PackagesTypeSizes[i].Contains("Envenlope"))
+                    {
+                        @Html.Label("Not Applicable")
+                    }
+                    else
+                    {
                         @Html.DisplayFor(model => model.Weights[i])
+                    }
                     </th>
                     <th>
                         @ViewBag.Prices[i]["CNY"]
@@ -167,5 +158,22 @@
                 </tr>
             }
          </table>
+         <hr />
+         <h3> Total Price </h3>
+         <table class="table table-bordered table-striped">
+             <tr>
+                 <th>CNY</th>
+                 <th>HKD</th>
+                 <th>MOP</th>
+                 <th>TWD</th>
+             </tr>
+             <tr>
+                 <th>@ViewBag.TotalPrice["CNY"]</th>
+                 <th>@ViewBag.TotalPrice["HKD"]</th>
+                 <th>@ViewBag.TotalPrice["MOP"]</th>
+                 <th>@ViewBag.TotalPrice["TWD"]</th>
+             </tr>
+         </table>
     }
-    </div>
+    @ViewBag.msg
+</div>

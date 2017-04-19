@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -131,8 +132,12 @@ namespace SinExWebApp20256461.Controllers
             CostViewModel.DestinationList = db.Destinations.Select(a => a.City).Distinct().ToList();
             CostViewModel.OriginList = db.Destinations.Select(a => a.City).Distinct().ToList();
             CostViewModel.PackageTypesSizeList = db.PakageTypeSizes.Select(a => a.size).Distinct().ToList();
-            if (String.IsNullOrEmpty(submit))
+            if (String.IsNullOrEmpty(submit) || NumOfPackages == null || NumOfPackages <= 0)
             {
+                if (NumOfPackages <= 0)
+                {
+                    ViewBag.msg = "Package number can't smaller or equal zero";
+                }
                 ViewBag.status = "initial";
                 return View(CostViewModel);
             }
@@ -154,52 +159,37 @@ namespace SinExWebApp20256461.Controllers
                 CostViewModel.Destination = Destination;
                 CostViewModel.ServiceType = ServiceType;
                 Dictionary<string, decimal>[] Prices = new Dictionary<string, decimal>[(int)NumOfPackages];
+                Dictionary<string, decimal> TotalPrice = new Dictionary<string, decimal>();
+                TotalPrice["CNY"] = 0;
                 for(var i = 0; i < NumOfPackages; i += 1)
                 {
+                    if (!PackagesTypeSizes[i].Contains("Envenlope"))
+                    {
+                        if (!Regex.IsMatch(Weights[i], "^\\d+(?:\\.\\d)?$"))
+                        {
+                            ViewBag.status = "Add Packages";
+                            ViewBag.msg = "Please input valid weight";
+                            return View(CostViewModel);
+                        }
+                        if (decimal.Parse(Weights[i]) == 0)
+                        {
+                            ViewBag.status = "Add Packages";
+                            ViewBag.msg = "Please input valid weight";
+                            return View(CostViewModel);
+                        }
+                    }
                     Prices[i] = Calculate(ServiceType, PackagesTypeSizes[i], Weights[i]);
+                    TotalPrice["CNY"] += Prices[i]["CNY"];
                 }
+                TotalPrice["HKD"] = ConvertCurrency("HKD", TotalPrice["CNY"]);
+                TotalPrice["MOP"] = ConvertCurrency("MOP", TotalPrice["CNY"]);
+                TotalPrice["TWD"] = ConvertCurrency("TWD", TotalPrice["CNY"]);
                 ViewBag.Prices = Prices;
+                ViewBag.TotalPrice = TotalPrice;
                 ViewBag.status = "Calculate";
                 return View(CostViewModel);
             }
             return View();
-        }
-        Dictionary<string, decimal> Calculate(string ServiceType, string PackageTypeSize, string weight)
-        {
-            Dictionary<string, decimal> result = new Dictionary<string, decimal>();
-            ServiceType CostServiceType = db.ServiceTypes.SingleOrDefault(a => a.Type == ServiceType);
-            PakageTypeSize CostPackageTypeSize = db.PakageTypeSizes.SingleOrDefault(a => a.size == PackageTypeSize);
-            ServicePackageFee CostFee = db.ServicePackageFees.SingleOrDefault(a => a.PackageTypeID == CostPackageTypeSize.PackageType.PackageTypeID && a.ServiceTypeID == CostServiceType.ServiceTypeID);
-            string WeightLimit = CostPackageTypeSize.weightLimit;
-            decimal Fee = CostFee.Fee;
-            decimal MinimumFee = CostFee.MinimumFee;
-            decimal Price = Fee;
-            if (CostPackageTypeSize.PackageType.Type == "Envelope")
-            {
-                Price = Fee;
-            }
-            else
-            {
-                decimal actualWeight = decimal.Parse(weight);
-                Price = Fee * actualWeight;
-                if (CostPackageTypeSize.PackageType.Type != "Tube")
-                {
-                    decimal actualWeightLimit = decimal.Parse(WeightLimit.Replace("kg", ""));
-                    if (actualWeight > actualWeightLimit)
-                    {
-                        Price += 500;
-                    }
-                }
-                if (Price < MinimumFee)
-                {
-                    Price = MinimumFee;
-                }
-            }
-            result.Add("CNY", Price);
-            result.Add("HKD", ConvertCurrency("HKD", Price));
-            result.Add("MOP", ConvertCurrency("MOP", Price));
-            result.Add("TWD", ConvertCurrency("TWD", Price));
-            return result;
         }
         protected override void Dispose(bool disposing)
         {
