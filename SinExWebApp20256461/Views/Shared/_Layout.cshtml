@@ -34,7 +34,7 @@
                             <li>@Html.ActionLink("Currencies", "index", "Currencies")</li>
                         </ul>
                     </li>
-                    <li>@Html.ActionLink("Cost", "getCost", "Shipments")</li>
+                    <li>@Html.ActionLink("Cost", "Costcalculation", "ServicePackageFees")</li>
                     @if (User.IsInRole("Customer") || User.IsInRole("Employee"))
                     {
                       <li>@Html.ActionLink("Shipping History", "GenerateHistoryReport", "Shipments")</li>
