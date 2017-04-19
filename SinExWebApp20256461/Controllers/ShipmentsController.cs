@@ -303,7 +303,7 @@ namespace SinExWebApp20256461.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         // public ActionResult Create([Bind(Include = "Shipment.ReferenceNumber,Shipment.Origin,Shipment.Destination,ServiceType,Shipment.IfSendEmail,PackageType,Description,Value,WeightEstimated,Recipient.FullName,Recipient.CompanyName,Recipient.DeliveryAddress,Recipient.EmailAddress,Recipient.PhoneNumber,ShipmentPayer,TaxPayer")] Shipment shipment)
-        public ActionResult Create(String ReferenceNumber, string Origin, string Destination, string ServiceType, string PackageType, string Description, string Value, string WeightEstimated, string FullName, string CompanyName, string DeliveryAddress, string EmailAddress, string PhoneNumber, string ShipmentPayerNumber, string taxPayerNumber, string IfSendEmail)
+        public ActionResult Create(String ReferenceNumber, string Origin, string Destination, string ServiceType, List<string> PackageType, List<string> Description, List<string> Value, List<string> WeightEstimated, string FullName, string CompanyName, string DeliveryAddress, string EmailAddress, string PhoneNumber, string ShipmentPayerNumber, string taxPayerNumber, string IfSendEmail)
         {
             if (ModelState.IsValid)
             {
@@ -325,13 +325,13 @@ namespace SinExWebApp20256461.Controllers
                 recipient.PhoneNumber = PhoneNumber;
                 shipment.Recipient = recipient;
                 
-
+                /* to do: no need to instantiate package? */
                 var package = new Package();
-                package.Description = Description;
-                package.WeightEstimated = Convert.ToDouble(WeightEstimated);
-                package.Value = Convert.ToDouble(Value);
+                package.Description = Description[0];
+                package.WeightEstimated = Convert.ToDouble(WeightEstimated[0]);
+                package.Value = Convert.ToDouble(Value[0]);
                 var packageType = (from s in db.PackageTypes
-                                   where s.Type == PackageType
+                                   where s.Type == PackageType[0]
                                    select s).First();
                 package.PackageTypeID = packageType.PackageTypeID;
 
@@ -403,19 +403,6 @@ namespace SinExWebApp20256461.Controllers
 
             return View();
         }
-        /*
-        public ActionResult AddPackage()
-        {
-            TextBox description = new TextBox();
-            description
-            var newTextBox = document.createElement("INPUT");
-            newTextBox.type = "text";
-            newTextBox.id = "newTextBox_1";
-            document.getElementById("someDivWithinYourForm").appendChild(newTextBox);
-
-            return View();
-        }
-        */
 
         // GET: Shipments/Edit/5
         public ActionResult Edit(int? id)
@@ -427,7 +414,7 @@ namespace SinExWebApp20256461.Controllers
             Shipment shipment = db.Shipments.Find(id);
 
             var ret = new CreateShipmentViewModel();
-            ret.shipment = db.Shipments.Find(id);
+            ret.shipment = shipment;
 
             ret.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
             ret.PackageTypes = db.PackageTypes.Select(a => a.Type).Distinct().ToList();
@@ -444,15 +431,34 @@ namespace SinExWebApp20256461.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "WaybillId,ReferenceNumber,ServiceType,ShippedDate,DeliveredDate,RecipientName,NumberOfPackages,Origin,Destination,Status,ShippingAccountId")] Shipment shipment)
+        public ActionResult Edit(string submit, string ReferenceNumber, string Origin, string Destination, string FullName, string CompanyName, string DeliveryAddress, string EmailAddress, string PhoneNumber, string ServiceType, string IfSendEmail, string ShipmentPayerNumber, string taxPayerNumber, List<string> PackageType, List<string> Description, List<string> Value, List<string> WeightEstimated)
         {
             if (ModelState.IsValid)
             {
+                Shipment shipment = db.Shipments.Find(ViewBag.waybillId);
+                if (submit == "add")
+                {
+                    shipment.NumberOfPackages += 1;
+                    var newPackage = new Package();
+                    newPackage.WaybillId = shipment.WaybillId;
+                    newPackage.Shipment = shipment;
+                    return View(shipment);
+                }
+
+                if (IfSendEmail == "Yes")
+                {
+                    shipment.IfSendEmail = true;
+                }
+                else
+                {
+                    shipment.IfSendEmail = false;
+                }
                 db.Entry(shipment).State = EntityState.Modified;
                 db.SaveChanges();
+
                 return RedirectToAction("Index");
             }
-            return View(shipment);
+            return RedirectToAction("Index");
         }
 
         // GET: Shipments/Delete/5

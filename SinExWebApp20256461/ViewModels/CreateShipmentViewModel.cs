@@ -33,10 +33,10 @@ ErrorMessage = "Please input valid Code")]
         public virtual string PhoneNumber { get; set; }
         public virtual Pickup Pickup { get; set; }
         public virtual String ServiceType { get; set; }
-        public virtual String PackageType { get; set; }
-        public virtual String Description { get; set; }
-        public virtual String Value { get; set; }
-        public virtual String WeightEstimated { get; set; }
+        public virtual List<String> PackageType { get; set; }
+        public virtual List<String> Description { get; set; }
+        public virtual List<String> Value { get; set; }
+        public virtual List<String> WeightEstimated { get; set; }
         public virtual String ShipmentPayerNumber { get; set; }
         public virtual String taxPayerNumber { get; set; }
         public virtual List<String> ServiceTypes { get; set; }
