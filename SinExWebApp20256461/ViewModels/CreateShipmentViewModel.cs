@@ -15,6 +15,7 @@ namespace SinExWebApp20256461.ViewModels
         public virtual Shipment shipment { get; set; }
         public virtual string ReferenceNumber { get; set; }
 
+        public virtual string nickname { get; set; }
         [StringLength(2, MinimumLength = 2)]
         [RegularExpression(@"^BJ|JL|HN|SC|CQ|JX|QH|GD|GZ|HI|NM|ZJ|HL|AH|NM|HK|NM|SD|XJ|YN|GS|XZ|MC|JX|JS|JX|HL|SH|LN|HE|TW|SX|HE|XJ|HB|SN|QH|NX|GS|HA$",
     ErrorMessage = "Please input valid Code")]
@@ -28,6 +29,7 @@ ErrorMessage = "Please input valid Code")]
         public virtual string IfSendEmail { get; set; }
         public virtual string RecipientName { get; set; }
         public virtual string RecipientCompany { get; set; }
+        public virtual string RecipientDept { get; set; }
         public virtual string DeliveryAddress { get; set; }
         public virtual string EmailAddress { get; set; }
         public virtual string PhoneNumber { get; set; }
