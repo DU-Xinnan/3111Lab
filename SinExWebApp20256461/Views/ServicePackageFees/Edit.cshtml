@@ -32,22 +32,8 @@
                 @Html.ValidationMessageFor(model => model.MinimumFee, "", new { @class = "text-danger" })
             </div>
         </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.PackageTypeID, "PackageTypeID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("PackageTypeID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.PackageTypeID, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ServiceTypeID, "ServiceTypeID", htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.DropDownList("ServiceTypeID", null, htmlAttributes: new { @class = "form-control" })
-                @Html.ValidationMessageFor(model => model.ServiceTypeID, "", new { @class = "text-danger" })
-            </div>
-        </div>
+        @Html.HiddenFor(model => model.PackageTypeID)
+        @Html.HiddenFor(model => model.ServiceTypeID)
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">

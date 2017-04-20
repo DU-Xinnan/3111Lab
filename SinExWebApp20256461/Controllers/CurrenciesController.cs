@@ -36,29 +36,32 @@ namespace SinExWebApp20256461.Controllers
         }
 
         // GET: Currencies/Create
-        public ActionResult Create()
-        {
-            return View();
-        }
+        //[Authorize(Roles = "Employee")]
+        //public ActionResult Create()
+        //{
+        //    return View();
+        //}
 
         // POST: Currencies/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "CurrencyCode,ExchangeRate")] Currency currency)
-        {
-            if (ModelState.IsValid)
-            {
-                db.Currencies.Add(currency);
-                db.SaveChanges();
-                return RedirectToAction("Index");
-            }
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //[Authorize(Roles = "Employee")]
+        //public ActionResult Create([Bind(Include = "CurrencyCode,ExchangeRate")] Currency currency)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        db.Currencies.Add(currency);
+        //        db.SaveChanges();
+        //        return RedirectToAction("Index");
+        //    }
 
-            return View(currency);
-        }
+        //    return View(currency);
+        //}
 
         // GET: Currencies/Edit/5
+        [Authorize(Roles = "Employee")]
         public ActionResult Edit(string id)
         {
             if (id == null)
@@ -78,6 +81,7 @@ namespace SinExWebApp20256461.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Employee")]
         public ActionResult Edit([Bind(Include = "CurrencyCode,ExchangeRate")] Currency currency)
         {
             if (ModelState.IsValid)
@@ -90,23 +94,25 @@ namespace SinExWebApp20256461.Controllers
         }
 
         // GET: Currencies/Delete/5
-        public ActionResult Delete(string id)
-        {
-            if (id == null)
-            {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
-            }
-            Currency currency = db.Currencies.Find(id);
-            if (currency == null)
-            {
-                return HttpNotFound();
-            }
-            return View(currency);
-        }
+        //[Authorize(Roles = "Employee")]
+        //public ActionResult Delete(string id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+        //    }
+        //    Currency currency = db.Currencies.Find(id);
+        //    if (currency == null)
+        //    {
+        //        return HttpNotFound();
+        //    }
+        //    return View(currency);
+        //}
 
         // POST: Currencies/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Employee")]
         public ActionResult DeleteConfirmed(string id)
         {
             Currency currency = db.Currencies.Find(id);

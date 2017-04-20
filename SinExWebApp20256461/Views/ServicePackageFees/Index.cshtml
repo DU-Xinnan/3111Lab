@@ -8,16 +8,19 @@
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.PackageType.Type)
+            Service Type
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ServiceType.Type)
+            Package Type
         </th>
         <th>
             @Html.DisplayNameFor(model => model.Fee)
         </th>
         <th>
             @Html.DisplayNameFor(model => model.MinimumFee)
+        </th>
+        <th>
+            Penalty
         </th>
         <th></th>
     </tr>
@@ -35,6 +38,10 @@
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.MinimumFee)
+        </td>
+        <td></td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id = item.ServicePackageFeeID })
         </td>
     </tr>
 }

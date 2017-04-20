@@ -303,7 +303,7 @@ namespace SinExWebApp20256461.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         // public ActionResult Create([Bind(Include = "Shipment.ReferenceNumber,Shipment.Origin,Shipment.Destination,ServiceType,Shipment.IfSendEmail,PackageType,Description,Value,WeightEstimated,Recipient.FullName,Recipient.CompanyName,Recipient.DeliveryAddress,Recipient.EmailAddress,Recipient.PhoneNumber,ShipmentPayer,TaxPayer")] Shipment shipment)
-        public ActionResult Create(String nickname, String ReferenceNumber, string Origin, string Destination, string ServiceType, List<string> PackageType, List<string> Description, List<string> Value, List<string> WeightEstimated, string RecipientName, string RecipientCompany, string RecipientDept, string DeliveryAddress, string EmailAddress, string PhoneNumber, string ShipmentPayerNumber, string taxPayerNumber, string IfSendEmail)
+        public ActionResult Create(String ReferenceNumber, string Origin, string Destination, string ServiceType, List<string> PackageType, List<string> Description, List<string> Value, List<string> WeightEstimated, string FullName, string CompanyName, string DeliveryAddress, string EmailAddress, string PhoneNumber, string ShipmentPayerNumber, string taxPayerNumber, string IfSendEmail)
         {
             if (ModelState.IsValid)
             {
@@ -311,49 +311,36 @@ namespace SinExWebApp20256461.Controllers
 
                 shipment.ReferenceNumber = ReferenceNumber;
                 shipment.ServiceType = ServiceType;
-                shipment.RecipientName = RecipientName;
+                shipment.RecipientName = FullName;
                 shipment.NumberOfPackages = 1;
                 shipment.Origin = Origin;
                 shipment.Destination = Destination;
                 shipment.Status = "pending";
 
                 var recipient = new Recipient();
-                recipient.FullName = RecipientName;
-                recipient.CompanyName = RecipientCompany;
-                recipient.DepartmentName = RecipientDept;
+                recipient.FullName = FullName;
+                recipient.CompanyName = CompanyName;
                 recipient.DeliveryAddress = DeliveryAddress;
                 recipient.EmailAddress = EmailAddress;
                 recipient.PhoneNumber = PhoneNumber;
                 shipment.Recipient = recipient;
-                
+
                 /* to do: no need to instantiate package? */
                 var package = new Package();
                 package.Description = Description[0];
                 package.WeightEstimated = Convert.ToDouble(WeightEstimated[0]);
                 package.Value = Convert.ToDouble(Value[0]);
-
-                string Type = PackageType[0];
+                string tmp = PackageType[0];
                 var packageType = (from s in db.PackageTypes
-                                   where s.Type == Type
+                                   where s.Type == tmp
                                    select s).First();
                 package.PackageTypeID = packageType.PackageTypeID;
 
                 var shippingAccount = (from s in db.ShippingAccounts
-                                      where s.UserName == User.Identity.Name
-                                      select s).First();
+                                       where s.UserName == User.Identity.Name
+                                       select s).First();
                 shipment.ShippingAccountId = shippingAccount.ShippingAccountId;
                 package.ShippingAccountNumber = shippingAccount.ShippingAccountNumber;
-
-                /* Add shipping account helper address */
-                if (nickname != null)
-                {
-                    SavedAddress helper_address = new SavedAddress();
-                    helper_address.NickName = nickname;
-                    helper_address.Address = DeliveryAddress;
-                    helper_address.Type = "recipient";
-                    shippingAccount.SavedAddresses.Add(helper_address);
-                }
-
 
                 shipment.Packages = new List<Package>();
                 shipment.Packages.Add(package);
@@ -371,7 +358,7 @@ namespace SinExWebApp20256461.Controllers
                                      where s.ShippingAccountNumber == ShipmentPayerNumber
                                      select s).FirstOrDefault();
                 var taxPayer = (from s in db.ShippingAccounts
-                                     where s.ShippingAccountNumber == taxPayerNumber
+                                where s.ShippingAccountNumber == taxPayerNumber
                                 select s).FirstOrDefault();
                 if (shipmentPayer == null || taxPayer == null)
                 {
@@ -397,6 +384,7 @@ namespace SinExWebApp20256461.Controllers
                 pickup.Location = "";
                 pickup.Date = DateTime.Now;
                 pickup.Type = "";
+
                 shipment.Pickup = pickup;
 
 
@@ -416,7 +404,6 @@ namespace SinExWebApp20256461.Controllers
 
             return View();
         }
-
         // GET: Shipments/Edit/5
         public ActionResult Edit(int? id)
         {

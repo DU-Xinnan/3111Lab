@@ -22,9 +22,13 @@
         <td>
             @Html.DisplayFor(modelItem => item.ExchangeRate)
         </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.CurrencyCode })
-        </td>
+        @if (User.IsInRole("Employee"))
+        {
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.CurrencyCode })
+            </td>
+        }
+
     </tr>
 }
 

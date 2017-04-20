@@ -5,10 +5,12 @@
 }
 
 <h2>Index</h2>
-
-<p>
-    @Html.ActionLink("Create New", "Create")
-</p>
+@if (User.IsInRole("Employee"))
+{
+    <p>
+        @Html.ActionLink("Create New", "Create")
+    </p>
+}
 <table class="table">
     <tr>
         <th>
@@ -29,9 +31,7 @@
             @Html.DisplayFor(modelItem => item.ProvinceCode)
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.DestinationID }) |
-            @Html.ActionLink("Details", "Details", new { id=item.DestinationID }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.DestinationID })
+            @Html.ActionLink("Details", "Details", new { id=item.DestinationID })
         </td>
     </tr>
 }

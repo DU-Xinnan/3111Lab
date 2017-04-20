@@ -340,9 +340,7 @@
     <Content Include="Views\Currencies\Edit.cshtml" />
     <Content Include="Views\Currencies\Index.cshtml" />
     <Content Include="Views\Destinations\Create.cshtml" />
-    <Content Include="Views\Destinations\Delete.cshtml" />
     <Content Include="Views\Destinations\Details.cshtml" />
-    <Content Include="Views\Destinations\Edit.cshtml" />
     <Content Include="Views\Destinations\Index.cshtml" />
     <Content Include="Views\PakageTypeSizes\Create.cshtml" />
     <Content Include="Views\PakageTypeSizes\Delete.cshtml" />
