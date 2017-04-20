@@ -220,6 +220,7 @@
     <Compile Include="Controllers\PersonalShippingAccountsController.cs" />
     <Compile Include="Controllers\PickupsController.cs" />
     <Compile Include="Controllers\RecipientsController.cs" />
+    <Compile Include="Controllers\SavedAddressesController.cs" />
     <Compile Include="Controllers\ServicePackageFeesController.cs" />
     <Compile Include="Controllers\ServiceTypesController.cs" />
     <Compile Include="Controllers\ShipmentsController.cs" />
@@ -384,6 +385,7 @@
     <Folder Include="Views\Package\" />
     <Folder Include="Views\Pickups\" />
     <Folder Include="Views\Recipients\" />
+    <Folder Include="Views\SavedAddresses\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

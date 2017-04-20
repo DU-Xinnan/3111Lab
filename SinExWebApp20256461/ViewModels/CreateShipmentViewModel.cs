@@ -17,7 +17,9 @@ namespace SinExWebApp20256461.ViewModels
         public virtual Pickup Pickup { get; set; }
         public virtual string Nickname { get; set; }
         public virtual string IfSendEmail { get; set; }
+        public virtual string ShipmentPayer { get; set; }
+        public virtual string TaxPayer { get; set; }
         public virtual List<String> ServiceTypes { get; set; }
-        public virtual List<String> PackageTypes { get; set; }
+        public virtual List<String> PackageTypeSizes { get; set; }
     }
 }

@@ -292,26 +292,9 @@ namespace SinExWebApp20256461.Controllers
         public ActionResult Create()
         {
             var shipmentView = new CreateShipmentViewModel();
-            shipmentView.Shipment.Invoices.Add(new Invoice());
-            //var shipment = new Shipment();
-            //shipment.Recipient = new Recipient();
-            //shipment.Packages.Add(new Package());
-            //shipment.Invoices.Add(new Invoice());
-            //shipment.Invoices.Add(new Invoice());
-
-            //shipmentView.Shipment = shipment; 
-
-            /*
-            var invoices = new ICollection<Invoice>[];
-            var packages = new ICollection<Package>[];
-            var recipient = new Recipient();
-            shipment.Invoices = invoices;
-
-            shipment.Packages = new ICollection<Package>[1];
-            */
-
             shipmentView.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
-            shipmentView.PackageTypes = db.PackageTypes.Select(a => a.Type).Distinct().ToList();
+            shipmentView.PackageTypeSizes = db.PakageTypeSizes.Select(a => a.size).Distinct().ToList();
+            
             return View(shipmentView);
         }
 
@@ -321,30 +304,33 @@ namespace SinExWebApp20256461.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         // public ActionResult Create([Bind(Include = "Shipment.ReferenceNumber,Shipment.Origin,Shipment.Destination,ServiceType,Shipment.IfSendEmail,PackageType,Description,Value,WeightEstimated,Recipient.FullName,Recipient.CompanyName,Recipient.DeliveryAddress,Recipient.EmailAddress,Recipient.PhoneNumber,ShipmentPayer,TaxPayer")] Shipment shipment)
-        public ActionResult Create(CreateShipmentViewModel shipmentView)
+        public ActionResult Create(CreateShipmentViewModel shipmentView, Recipient recipient, string ShipmentPayer, string TaxPayer)
         {
             if (ModelState.IsValid)
             {
                 var shipment = shipmentView.Shipment;
                 shipment.Status = "pending";
                 shipment.NumberOfPackages = 1;
+                shipment.Recipient = recipient;
 
-                var package = new Package();
-                
-                /*
-                string Type = PackageType[0];
-                var packageType = (from s in db.PackageTypes
-                                   where s.Type == Type
-                                   select s).First();
-                package.PackageTypeID = packageType.PackageTypeID;
-                
+                shipment.Invoices = new List<Invoice>();
+                var shipmentInvoice = new Invoice();
+                shipmentInvoice.Type = "shipment";
+                shipmentInvoice.ShippingAccountNumber = ShipmentPayer;
+                shipment.Invoices.Add(shipmentInvoice);
+
+                var taxInvoice = new Invoice();
+                taxInvoice.Type = "tax_duty";
+                taxInvoice.ShippingAccountNumber = TaxPayer;
+                shipment.Invoices.Add(taxInvoice);
+
 
                 var shippingAccount = (from s in db.ShippingAccounts
                                       where s.UserName == User.Identity.Name
                                       select s).First();
                 shipment.ShippingAccountId = shippingAccount.ShippingAccountId;
-                shipmentView.shipment.Packages.ToList()[0].ShippingAccountNumber = shippingAccount.ShippingAccountNumber;
-                */
+                
+               
 
                 /* Add shipping account helper address */
                 if (shipmentView.Nickname != null)
@@ -353,7 +339,8 @@ namespace SinExWebApp20256461.Controllers
                     helper_address.NickName = shipmentView.Nickname;
                     helper_address.Address = shipmentView.Recipient.DeliveryAddress;
                     helper_address.Type = "recipient";
-                    //shippingAccount.SavedAddresses.Add(helper_address);
+                    shippingAccount.SavedAddresses.Add(helper_address);
+                    db.SavedAddresses.Add(helper_address);
                 }
 
                 if (shipmentView.IfSendEmail == "Yes")
@@ -366,22 +353,28 @@ namespace SinExWebApp20256461.Controllers
                 }
 
                 var shipmentPayer = (from s in db.ShippingAccounts
-                                     where s.ShippingAccountNumber == shipmentView.Shipment.Invoices.ToList()[0].ShippingAccountNumber
+                                     where s.ShippingAccountNumber == shipmentView.ShipmentPayer
                                      select s).FirstOrDefault();
                 var taxPayer = (from s in db.ShippingAccounts
-                                     where s.ShippingAccountNumber == shipmentView.Shipment.Invoices.ToList()[1].ShippingAccountNumber
+                                     where s.ShippingAccountNumber == shipmentView.TaxPayer
                                 select s).FirstOrDefault();
                 if (shipmentPayer == null || taxPayer == null)
                 {
                     return RedirectToAction("Index");  /* To do */
                 }
 
-                /* Update the database ???
+                shipment.ShippedDate = DateTime.Now;
+                shipment.DeliveredDate = DateTime.Now;
+
+                var pickup = new Pickup();
+                pickup.Date = DateTime.Now;
+                shipment.Pickup = pickup;
+                
+
                 db.Invoices.Add(taxInvoice);
                 db.Invoices.Add(shipmentInvoice);
-                db.Packages.Add(package);
                 db.Recipients.Add(recipient);
-                */
+                
                 db.Shipments.Add(shipment);
                 db.SaveChanges();
 
@@ -403,10 +396,10 @@ namespace SinExWebApp20256461.Controllers
             Shipment shipment = db.Shipments.Find(id);
 
             var ret = new CreateShipmentViewModel();
-            //ret.shipment = shipment;
-
+            ret.Shipment = shipment;
+            
             ret.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
-            ret.PackageTypes = db.PackageTypes.Select(a => a.Type).Distinct().ToList();
+            ret.PackageTypeSizes = db.PakageTypeSizes.Select(a => a.size).Distinct().ToList();
 
             if (shipment == null)
             {
@@ -420,17 +413,25 @@ namespace SinExWebApp20256461.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int? id, CreateShipmentViewModel shipment)
+        public ActionResult Edit(int? id, CreateShipmentViewModel shipmentView, string submit, string IfSendEmail, string ShipmentPayer, string TaxPayer)
         {
-            /*
+            
             if (ModelState.IsValid)
             {
-                Shipment shipment = db.Shipments.Find(id);
+                var shipment = shipmentView.Shipment;
+                var shipmentDB = db.Shipments.Find(id);
+
+                int id1 = shipmentDB.Invoices.ToList()[0].InvoiceID;
+                int id2 = shipmentDB.Invoices.ToList()[1].InvoiceID;
+
+                var query1 = db.Invoices.Find(id1);
+                var query2 = db.Invoices.Find(id2);
+
+                query1.ShippingAccountNumber = ShipmentPayer;
+                query2.ShippingAccountNumber = TaxPayer;
+
                 if (submit == "add")
                 {
-                    // CreateShipmentViewModel newViewModel = new CreateShipmentViewModel();
-                    // newViewModel.ReferenceNumber = ReferenceNumber;
-                    // newViewModel.Destination = Destination;
                     shipment.NumberOfPackages += 1;
                     var newPackage = new Package();
                     newPackage.WaybillId = shipment.WaybillId;
@@ -446,12 +447,15 @@ namespace SinExWebApp20256461.Controllers
                 {
                     shipment.IfSendEmail = false;
                 }
-                db.Entry(shipment).State = EntityState.Modified;
+                //db.Entry(shipment.Recipient).State = EntityState.Modified;    
+                //db.Entry(shipment.Invoices).State = EntityState.Modified;
+                db.Entry(query1).State = EntityState.Modified;
+                db.Entry(query2).State = EntityState.Modified;
                 db.SaveChanges();
 
                 return RedirectToAction("Index");
             }
-            */
+            
             return RedirectToAction("Index");
         }
 
