@@ -291,10 +291,28 @@ namespace SinExWebApp20256461.Controllers
         // GET: Shipments/Create
         public ActionResult Create()
         {
-            var shipment = new CreateShipmentViewModel();
-            shipment.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
-            shipment.PackageTypes = db.PackageTypes.Select(a => a.Type).Distinct().ToList();
-            return View(shipment);
+            var shipmentView = new CreateShipmentViewModel();
+            shipmentView.Shipment.Invoices.Add(new Invoice());
+            //var shipment = new Shipment();
+            //shipment.Recipient = new Recipient();
+            //shipment.Packages.Add(new Package());
+            //shipment.Invoices.Add(new Invoice());
+            //shipment.Invoices.Add(new Invoice());
+
+            //shipmentView.Shipment = shipment; 
+
+            /*
+            var invoices = new ICollection<Invoice>[];
+            var packages = new ICollection<Package>[];
+            var recipient = new Recipient();
+            shipment.Invoices = invoices;
+
+            shipment.Packages = new ICollection<Package>[1];
+            */
+
+            shipmentView.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
+            shipmentView.PackageTypes = db.PackageTypes.Select(a => a.Type).Distinct().ToList();
+            return View(shipmentView);
         }
 
         // POST: Shipments/Create
@@ -303,62 +321,42 @@ namespace SinExWebApp20256461.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         // public ActionResult Create([Bind(Include = "Shipment.ReferenceNumber,Shipment.Origin,Shipment.Destination,ServiceType,Shipment.IfSendEmail,PackageType,Description,Value,WeightEstimated,Recipient.FullName,Recipient.CompanyName,Recipient.DeliveryAddress,Recipient.EmailAddress,Recipient.PhoneNumber,ShipmentPayer,TaxPayer")] Shipment shipment)
-        public ActionResult Create(String nickname, String ReferenceNumber, string Origin, string Destination, string ServiceType, List<string> PackageType, List<string> Description, List<string> Value, List<string> WeightEstimated, string RecipientName, string RecipientCompany, string RecipientDept, string DeliveryAddress, string EmailAddress, string PhoneNumber, string ShipmentPayerNumber, string taxPayerNumber, string IfSendEmail)
+        public ActionResult Create(CreateShipmentViewModel shipmentView)
         {
             if (ModelState.IsValid)
             {
-                var shipment = new Shipment();
-
-                shipment.ReferenceNumber = ReferenceNumber;
-                shipment.ServiceType = ServiceType;
-                shipment.RecipientName = RecipientName;
-                shipment.NumberOfPackages = 1;
-                shipment.Origin = Origin;
-                shipment.Destination = Destination;
+                var shipment = shipmentView.Shipment;
                 shipment.Status = "pending";
+                shipment.NumberOfPackages = 1;
 
-                var recipient = new Recipient();
-                recipient.FullName = RecipientName;
-                recipient.CompanyName = RecipientCompany;
-                recipient.DepartmentName = RecipientDept;
-                recipient.DeliveryAddress = DeliveryAddress;
-                recipient.EmailAddress = EmailAddress;
-                recipient.PhoneNumber = PhoneNumber;
-                shipment.Recipient = recipient;
-                
-                /* to do: no need to instantiate package? */
                 var package = new Package();
-                package.Description = Description[0];
-                package.WeightEstimated = Convert.ToDouble(WeightEstimated[0]);
-                package.Value = Convert.ToDouble(Value[0]);
-
+                
+                /*
                 string Type = PackageType[0];
                 var packageType = (from s in db.PackageTypes
                                    where s.Type == Type
                                    select s).First();
                 package.PackageTypeID = packageType.PackageTypeID;
+                
 
                 var shippingAccount = (from s in db.ShippingAccounts
                                       where s.UserName == User.Identity.Name
                                       select s).First();
                 shipment.ShippingAccountId = shippingAccount.ShippingAccountId;
-                package.ShippingAccountNumber = shippingAccount.ShippingAccountNumber;
+                shipmentView.shipment.Packages.ToList()[0].ShippingAccountNumber = shippingAccount.ShippingAccountNumber;
+                */
 
                 /* Add shipping account helper address */
-                if (nickname != null)
+                if (shipmentView.Nickname != null)
                 {
                     SavedAddress helper_address = new SavedAddress();
-                    helper_address.NickName = nickname;
-                    helper_address.Address = DeliveryAddress;
+                    helper_address.NickName = shipmentView.Nickname;
+                    helper_address.Address = shipmentView.Recipient.DeliveryAddress;
                     helper_address.Type = "recipient";
-                    shippingAccount.SavedAddresses.Add(helper_address);
+                    //shippingAccount.SavedAddresses.Add(helper_address);
                 }
 
-
-                shipment.Packages = new List<Package>();
-                shipment.Packages.Add(package);
-
-                if (IfSendEmail == "Yes")
+                if (shipmentView.IfSendEmail == "Yes")
                 {
                     shipment.IfSendEmail = true;
                 }
@@ -368,44 +366,22 @@ namespace SinExWebApp20256461.Controllers
                 }
 
                 var shipmentPayer = (from s in db.ShippingAccounts
-                                     where s.ShippingAccountNumber == ShipmentPayerNumber
+                                     where s.ShippingAccountNumber == shipmentView.Shipment.Invoices.ToList()[0].ShippingAccountNumber
                                      select s).FirstOrDefault();
                 var taxPayer = (from s in db.ShippingAccounts
-                                     where s.ShippingAccountNumber == taxPayerNumber
+                                     where s.ShippingAccountNumber == shipmentView.Shipment.Invoices.ToList()[1].ShippingAccountNumber
                                 select s).FirstOrDefault();
                 if (shipmentPayer == null || taxPayer == null)
                 {
-                    return RedirectToAction("Index"); /* To do */
+                    return RedirectToAction("Index");  /* To do */
                 }
 
-                shipment.Invoices = new List<Invoice>();
-                var shipmentInvoice = new Invoice();
-                shipmentInvoice.Type = "shipment";
-                shipmentInvoice.ShippingAccountNumber = ShipmentPayerNumber;
-                shipment.Invoices.Add(shipmentInvoice);
-
-                var taxInvoice = new Invoice();
-                taxInvoice.Type = "tax_duty";
-                taxInvoice.ShippingAccountNumber = taxPayerNumber;
-                shipment.Invoices.Add(taxInvoice);
-
-                shipment.ShippedDate = DateTime.Now;
-                shipment.DeliveredDate = DateTime.Now;
-
-                /* Todo: maybe delete the default pickup */
-                var pickup = new Pickup();
-                pickup.Location = "";
-                pickup.Date = DateTime.Now;
-                pickup.Type = "";
-                shipment.Pickup = pickup;
-
-
-                /* Update the database */
+                /* Update the database ???
                 db.Invoices.Add(taxInvoice);
                 db.Invoices.Add(shipmentInvoice);
                 db.Packages.Add(package);
                 db.Recipients.Add(recipient);
-
+                */
                 db.Shipments.Add(shipment);
                 db.SaveChanges();
 
@@ -427,7 +403,7 @@ namespace SinExWebApp20256461.Controllers
             Shipment shipment = db.Shipments.Find(id);
 
             var ret = new CreateShipmentViewModel();
-            ret.shipment = shipment;
+            //ret.shipment = shipment;
 
             ret.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
             ret.PackageTypes = db.PackageTypes.Select(a => a.Type).Distinct().ToList();
@@ -444,8 +420,9 @@ namespace SinExWebApp20256461.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int? id, string submit, string ReferenceNumber, string Origin, string Destination, string FullName, string CompanyName, string DeliveryAddress, string EmailAddress, string PhoneNumber, string ServiceType, string IfSendEmail, string ShipmentPayerNumber, string taxPayerNumber, List<string> PackageType, List<string> Description, List<string> Value, List<string> WeightEstimated)
+        public ActionResult Edit(int? id, CreateShipmentViewModel shipment)
         {
+            /*
             if (ModelState.IsValid)
             {
                 Shipment shipment = db.Shipments.Find(id);
@@ -474,6 +451,7 @@ namespace SinExWebApp20256461.Controllers
 
                 return RedirectToAction("Index");
             }
+            */
             return RedirectToAction("Index");
         }
 
