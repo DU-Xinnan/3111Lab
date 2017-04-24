@@ -21,7 +21,7 @@ namespace SinExWebApp20256461.Controllers
             }
             return decimal.Parse(Session[currency].ToString()) * value;
         }
-        public Dictionary<string, decimal> Calculate(string ServiceType, string PackageTypeSize, string weight)
+        public Dictionary<string, decimal> Calculate(string ServiceType, string PackageTypeSize, decimal weight)
         {
             Dictionary<string, decimal> result = new Dictionary<string, decimal>();
             ServiceType CostServiceType = db.ServiceTypes.SingleOrDefault(a => a.Type == ServiceType);
@@ -37,9 +37,9 @@ namespace SinExWebApp20256461.Controllers
             }
             else
             {
-                decimal actualWeight = decimal.Parse(weight);
+                decimal actualWeight = Math.Round(weight, 1);
                 Price = Fee * actualWeight;
-                if (CostPackageTypeSize.PackageType.Type != "Tube")
+                if (CostPackageTypeSize.PackageType.Type != "Tube" && CostPackageTypeSize.PackageType.Type != "Customer")
                 {
                     decimal actualWeightLimit = decimal.Parse(WeightLimit.Replace("kg", ""));
                     if (actualWeight > actualWeightLimit)

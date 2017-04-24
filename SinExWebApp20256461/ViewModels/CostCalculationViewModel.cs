@@ -21,7 +21,7 @@ namespace SinExWebApp20256461.ViewModels
         [Required]
         public virtual string ServiceType { get; set; }
         public virtual IList<string> PackagesTypeSizes { get; set; }
-        public virtual IList<string> Weights { get; set; }
+        public virtual IList<decimal> Weights { get; set; }
         [Required]
         [Range(1, 10, ErrorMessage = "Please enter valid integer Number")]
         public virtual int NumOfPackages { get; set; }

@@ -125,7 +125,7 @@ namespace SinExWebApp20256461.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-        public ActionResult Costcalculation(string Origin, string Destination, string ServiceType, IList<string> PackagesTypeSizes, IList<string> Weights, int? NumOfPackages, string submit)
+        public ActionResult Costcalculation(string Origin, string Destination, string ServiceType, IList<string> PackagesTypeSizes, IList<decimal> Weights, int? NumOfPackages, string submit)
         {
             CostCalculationViewModel CostViewModel = new CostCalculationViewModel();
             CostViewModel.ServiceTypesList = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
@@ -141,7 +141,7 @@ namespace SinExWebApp20256461.Controllers
                 ViewBag.status = "initial";
                 return View(CostViewModel);
             }
-            else if(submit == "Add Packages")
+            else if (submit == "Add Packages")
             {
                 CostViewModel.Origin = Origin;
                 CostViewModel.Destination = Destination;
@@ -150,7 +150,7 @@ namespace SinExWebApp20256461.Controllers
                 ViewBag.status = "Add Packages";
                 return View(CostViewModel);
             }
-            else if(submit == "Calculate")
+            else if (submit == "Calculate")
             {
                 CostViewModel.PackagesTypeSizes = PackagesTypeSizes;
                 CostViewModel.Weights = Weights;
@@ -161,20 +161,20 @@ namespace SinExWebApp20256461.Controllers
                 Dictionary<string, decimal>[] Prices = new Dictionary<string, decimal>[(int)NumOfPackages];
                 Dictionary<string, decimal> TotalPrice = new Dictionary<string, decimal>();
                 TotalPrice["CNY"] = 0;
-                for(var i = 0; i < NumOfPackages; i += 1)
+                for (var i = 0; i < NumOfPackages; i += 1)
                 {
                     if (!PackagesTypeSizes[i].Contains("Envenlope"))
                     {
-                        if (!Regex.IsMatch(Weights[i], "^\\d+(?:\\.\\d)?$"))
+                        //if (!Regex.IsMatch(Weights[i], "^\\d+(?:\\.\\d)?$"))
+                        //{
+                        //    ViewBag.status = "Add Packages";
+                        //    ViewBag.msg = "Please input valid weight";
+                        //    return View(CostViewModel);
+                        //}
+                        if (Weights[i] <= 0 || Weights[i] > (decimal)5792000000000000000000000.0)
                         {
                             ViewBag.status = "Add Packages";
-                            ViewBag.msg = "Please input valid weight";
-                            return View(CostViewModel);
-                        }
-                        if (decimal.Parse(Weights[i]) == 0)
-                        {
-                            ViewBag.status = "Add Packages";
-                            ViewBag.msg = "Please input valid weight";
+                            ViewBag.msg = "Please weight can't be smaller or equal to 1, or larger than the weight of the earth ";
                             return View(CostViewModel);
                         }
                     }

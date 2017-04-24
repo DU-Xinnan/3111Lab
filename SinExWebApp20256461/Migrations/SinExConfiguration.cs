@@ -29,6 +29,7 @@ namespace SinExWebApp20256461.Migrations
             //    );
             //
             // Add package type data.
+            /*
             context.PackageTypes.AddOrUpdate(
                 p => p.PackageTypeID,
                 new PackageType { PackageTypeID = 1, Type = "Envelope", Description = "for correspondence and documents only with no commercial value" },
@@ -98,17 +99,7 @@ namespace SinExWebApp20256461.Migrations
                 new Currency { CurrencyCode = "MOP", ExchangeRate = 1.16 },
                 new Currency { CurrencyCode = "TWD", ExchangeRate = 4.56}
                 );
-            // Add size data.
-            context.PakageTypeSizes.AddOrUpdate(
-                p => p.PakageTypeSizeID,
-                new PakageTypeSize { size = "Envenlope-250x350mm", weightLimit = "Not applicable", PackageTypeID = 1 },
-                new PakageTypeSize { size = "Pak-small - 350x400mm", weightLimit = "5kg", PackageTypeID = 2 },
-                new PakageTypeSize { size = "Pak-large - 450x500mm", weightLimit = "5kg", PackageTypeID = 2 },
-                new PakageTypeSize { size = "Tube-1000x80mm", weightLimit = "Not applicable", PackageTypeID = 3 },
-                new PakageTypeSize { size = "Box-small - 300x250x150mm", weightLimit = "10kg", PackageTypeID = 4 },
-                new PakageTypeSize { size = "Box-medium - 400x350x250mm", weightLimit = "20kg", PackageTypeID = 4 },
-                new PakageTypeSize { size = "Box-large - 500x450x350mm", weightLimit = "30kg", PackageTypeID = 4 }
-                );
+
             context.Destinations.AddOrUpdate(
                p => p.City,
                new Destination { City = "Beijing", ProvinceCode = "BJ", CurrencyCode = "CNY" },
@@ -152,9 +143,9 @@ namespace SinExWebApp20256461.Migrations
                new Destination { City = "Yumen", ProvinceCode = "GS", CurrencyCode = "CNY" },
                new Destination { City = "Zhengzhou", ProvinceCode = "HA", CurrencyCode = "CNY" }
                );
-
+            
             // Add shipment data.
-            /*
+
             context.Shipments.AddOrUpdate(
                 p => p.WaybillId,
                 new Shipment { WaybillId = 1, ReferenceNumber = "", ServiceType = "Same Day", ShippedDate = new DateTime(2016, 11, 11), DeliveredDate = new DateTime(2016, 11, 11), RecipientName = "Andy Ho", NumberOfPackages = 1, Origin = "Hong Kong", Destination = "Guangzhou", Status = "Delivered", ShippingAccountId = 8 },
@@ -182,7 +173,7 @@ namespace SinExWebApp20256461.Migrations
                 new Shipment { WaybillId = 23, ReferenceNumber = "", ServiceType = "Next Day 15:00", ShippedDate = new DateTime(2016, 10, 23), DeliveredDate = new DateTime(2016, 10, 24), RecipientName = "Harry Ho", NumberOfPackages = 2, Origin = "Hefei", Destination = "Beijing", Status = "Delivered", ShippingAccountId = 8 },
                 new Shipment { WaybillId = 24, ReferenceNumber = "", ServiceType = "Ground", ShippedDate = new DateTime(2017, 01, 15), DeliveredDate = new DateTime(2017, 01, 19), RecipientName = "Peter Pang", NumberOfPackages = 3, Origin = "Beijing", Destination = "Lhasa", Status = "Delivered", ShippingAccountId = 9 },
                 new Shipment { WaybillId = 25, ReferenceNumber = "386456", ServiceType = "Same Day", ShippedDate = new DateTime(2017, 01, 05), DeliveredDate = new DateTime(2017, 01, 05), RecipientName = "Jerry Jia", NumberOfPackages = 1, Origin = "Beijing", Destination = "Hangzhou", Status = "Delivered", ShippingAccountId = 9 }
-            );*/
+            );
             context.Pickups.AddOrUpdate(
                 p => p.PickupID,
                 new Pickup { PickupID = 1, Date = new DateTime(2016, 11, 12), Location = "Shanghai", Type="Immediate" }
@@ -198,6 +189,19 @@ namespace SinExWebApp20256461.Migrations
             context.Trackings.AddOrUpdate(
                 p => p.TrackingID,
                 new Tracking { TrackingID = 1, WaybillId = 1, DateTime = new DateTime(2016, 11, 22, 19, 27, 15), Description="Piacked up", Location="Hong Kong"}
+                );
+                */
+            // Add size data.
+            context.PakageTypeSizes.AddOrUpdate(
+                p => p.PakageTypeSizeID,
+                new PakageTypeSize { size = "Envenlope-250x350mm", weightLimit = "Not applicable", PackageTypeID = 91 },
+                new PakageTypeSize { size = "Pak-small - 350x400mm", weightLimit = "5kg", PackageTypeID = 92 },
+                new PakageTypeSize { size = "Pak-large - 450x500mm", weightLimit = "5kg", PackageTypeID = 92 },
+                new PakageTypeSize { size = "Tube-1000x80mm", weightLimit = "Not applicable", PackageTypeID = 93 },
+                new PakageTypeSize { size = "Box-small - 300x250x150mm", weightLimit = "10kg", PackageTypeID = 94 },
+                new PakageTypeSize { size = "Box-medium - 400x350x250mm", weightLimit = "20kg", PackageTypeID = 94 },
+                new PakageTypeSize { size = "Box-large - 500x450x350mm", weightLimit = "30kg", PackageTypeID = 94 },
+                new PakageTypeSize { size = "Customer", weightLimit = "Not applicable", PackageTypeID = 95 }
                 );
         }
     }
