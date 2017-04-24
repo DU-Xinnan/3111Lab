@@ -292,27 +292,45 @@ namespace SinExWebApp20256461.Controllers
         public ActionResult Create()
         {
             var shipmentView = new CreateShipmentViewModel();
-            shipmentView.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
-            shipmentView.PackageTypeSizes = db.PakageTypeSizes.Select(a => a.size).Distinct().ToList();
-            
+            ViewBag.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
+            ViewBag.PackageTypeSizes = db.PakageTypeSizes.Select(a => a.size).Distinct().ToList();
+            //shipmentView.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
+            //shipmentView.PackageTypeSizes = db.PakageTypeSizes.Select(a => a.size).Distinct().ToList();
+            shipmentView.Packages = new List<Package>();
+            var new_package = new Package();
+            shipmentView.Packages.Add(new_package);
             return View(shipmentView);
         }
-
         // POST: Shipments/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         // public ActionResult Create([Bind(Include = "Shipment.ReferenceNumber,Shipment.Origin,Shipment.Destination,ServiceType,Shipment.IfSendEmail,PackageType,Description,Value,WeightEstimated,Recipient.FullName,Recipient.CompanyName,Recipient.DeliveryAddress,Recipient.EmailAddress,Recipient.PhoneNumber,ShipmentPayer,TaxPayer")] Shipment shipment)
-        public ActionResult Create(CreateShipmentViewModel shipmentView, Recipient recipient, string ShipmentPayer, string TaxPayer)
+        public ActionResult Create(CreateShipmentViewModel shipmentView, Recipient recipient, string ShipmentPayer, string TaxPayer, string submit)
         {
             if (ModelState.IsValid)
             {
+                /* add packages */
+                if (submit == "add")
+                {
+                    ViewBag.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
+                    ViewBag.PackageTypeSizes = db.PakageTypeSizes.Select(a => a.size).Distinct().ToList();
+                    var new_package = new Package();
+                    shipmentView.Packages.Add(new_package);
+                    return View(shipmentView);
+                }
                 var shipment = shipmentView.Shipment;
                 shipment.Status = "pending";
-                shipment.NumberOfPackages = 1;
                 shipment.Recipient = recipient;
-
+                shipment.NumberOfPackages = 1;
+                
+                for (int i = 0; i< shipmentView.Packages.Count; i++)
+                {
+                    shipment.Packages.Add(shipmentView.Packages[i]);
+                    shipment.NumberOfPackages++;
+                }
+                /* create invoices */
                 shipment.Invoices = new List<Invoice>();
                 var shipmentInvoice = new Invoice();
                 shipmentInvoice.Type = "shipment";
@@ -328,9 +346,7 @@ namespace SinExWebApp20256461.Controllers
                 var shippingAccount = (from s in db.ShippingAccounts
                                       where s.UserName == User.Identity.Name
                                       select s).First();
-                shipment.ShippingAccountId = shippingAccount.ShippingAccountId;
-                
-               
+                shipment.ShippingAccountId = shippingAccount.ShippingAccountId;                             
 
                 /* Add shipping account helper address */
                 if (shipmentView.Nickname != null)

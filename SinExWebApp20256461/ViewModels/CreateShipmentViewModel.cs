@@ -19,6 +19,7 @@ namespace SinExWebApp20256461.ViewModels
         public virtual string IfSendEmail { get; set; }
         public virtual string ShipmentPayer { get; set; }
         public virtual string TaxPayer { get; set; }
+        public virtual IList<Package> Packages { get; set; }
         public virtual List<String> ServiceTypes { get; set; }
         public virtual List<String> PackageTypeSizes { get; set; }
     }
