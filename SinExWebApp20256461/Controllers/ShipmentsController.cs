@@ -100,41 +100,63 @@ namespace SinExWebApp20256461.Controllers
                                 where s.ShippedDate >= ShippedStartDate && s.ShippedDate <= ShippedEndDate
                                 select s;
             }
-            ViewBag.ServiceTypeSortParm = string.IsNullOrEmpty(sortOrder) ? "serviceType_desc" : "";
-            ViewBag.ShippedDateSortParm = string.IsNullOrEmpty(sortOrder) ? "shippedDate_desc" : "";
-            ViewBag.DeliveredDateSortParm = string.IsNullOrEmpty(sortOrder) ? "DeliveredDate_desc" : "";
-            ViewBag.RecipientNameSortParm = string.IsNullOrEmpty(sortOrder) ? "RecipientName_desc" : "";
-            ViewBag.OriginSortParm = string.IsNullOrEmpty(sortOrder) ? "Origin_desc" : "";
-            ViewBag.DestinationSortParm = string.IsNullOrEmpty(sortOrder) ? "Destination_desc" : "";
-            ViewBag.ShippingAccountIdSortParm = string.IsNullOrEmpty(sortOrder) ? "ShippingAccountId_desc" : "";
+            ViewBag.ServiceTypeSortParm = sortOrder == "ServiceType" ? "ServiceType_desc" : "ServiceType";
+            ViewBag.ShippedDateSortParm = sortOrder == "ShippedDate" ? "ShippedDate_desc" : "ShippedDate";
+            ViewBag.DeliveredDateSortParm = sortOrder == "DeliveredDate" ? "DeliveredDate_desc" : "DeliveredDate";
+            ViewBag.RecipientNameSortParm = sortOrder == "RecipientName" ? "RecipientName_desc" : "RecipientName";
+            ViewBag.OriginSortParm = sortOrder == "Origin" ? "Origin_desc" : "Origin";
+            ViewBag.DestinationSortParm = sortOrder == "Destination" ? "Destination_desc" : "Destination";
+            ViewBag.ShippingAccountIdSortParm = sortOrder == "ShippingAccountId" ? "ShippingAccountId_desc" : "ShippingAccountId";
             switch (sortOrder)
             {
-                case "serviceType_desc":
+                case "serviceType":
                     shipmentQuery = shipmentQuery.OrderBy(s => s.ServiceType);
                     break;
-                case "shippedDate_desc":
+                case "shippedDate":
                     shipmentQuery = shipmentQuery.OrderBy(s => s.ShippedDate);
                     break;
-                case "DeliveredDate_desc":
+                case "DeliveredDate":
                     shipmentQuery = shipmentQuery.OrderBy(s => s.DeliveredDate);
                     break;
-                case "RecipientName_desc":
+                case "RecipientName":
                     shipmentQuery = shipmentQuery.OrderBy(s => s.RecipientName);
                     break;
-                case "Origin_desc":
+                case "Origin":
                     shipmentQuery = shipmentQuery.OrderBy(s => s.ServiceType);
                     break;
-                case "Destination_desc":
+                case "Destination":
                     shipmentQuery = shipmentQuery.OrderBy(s => s.Destination);
                     break;
-                case "ShippingAccountId_desc":
+                case "ShippingAccountId":
                     shipmentQuery = shipmentQuery.OrderBy(s => s.ShippingAccountId);
+                    break;
+                case "serviceType_desc":
+                    shipmentQuery = shipmentQuery.OrderByDescending(s => s.ServiceType);
+                    break;
+                case "shippedDate_desc":
+                    shipmentQuery = shipmentQuery.OrderByDescending(s => s.ShippedDate);
+                    break;
+                case "DeliveredDate_desc":
+                    shipmentQuery = shipmentQuery.OrderByDescending(s => s.DeliveredDate);
+                    break;
+                case "RecipientName_desc":
+                    shipmentQuery = shipmentQuery.OrderByDescending(s => s.RecipientName);
+                    break;
+                case "Origin_desc":
+                    shipmentQuery = shipmentQuery.OrderByDescending(s => s.ServiceType);
+                    break;
+                case "Destination_desc":
+                    shipmentQuery = shipmentQuery.OrderByDescending(s => s.Destination);
+                    break;
+                case "ShippingAccountId_desc":
+                    shipmentQuery = shipmentQuery.OrderByDescending(s => s.ShippingAccountId);
                     break;
                 default:
                     shipmentQuery = shipmentQuery.OrderBy(s => s.WaybillId);
                     break;
             }
             shipmentSearch.Shipments = shipmentQuery.ToPagedList(pageNumber, pageSize);
+            ViewBag.msg = sortOrder;
             return View(shipmentSearch);
         }
         public ActionResult getCost(string Origin, string Destination, string ServiceType, string PackageType, string Size, int? weights)
