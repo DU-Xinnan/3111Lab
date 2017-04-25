@@ -39,9 +39,9 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.ServiceTypes, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.Shipment.ServiceType, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.DropDownListFor(model => model.Shipment.ServiceType, new SelectList(Model.ServiceTypes), "please Select")
+                @Html.DropDownListFor(model => model.Shipment.ServiceType, new SelectList(ViewBag.ServiceTypes), "please Select")
             </div>
         </div>
 
@@ -56,7 +56,41 @@
 
         <hr />
         <h4>Package Information</h4>
-        Please add your first package.<br />
+        @for (var i = 0; i < Model.Packages.Count; i++)
+        {
+            string packageNum = "Package Number " + (i + 1);
+            <h3>@Html.Label(packageNum)</h3>
+            @Html.ActionLink("delete", "Create", new { id = i }, null)
+            <div class="form-group">
+                @Html.LabelFor(model => model.Packages[i].PackageTypeSize, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.Packages[i].PackageTypeSize, new SelectList(ViewBag.PackageTypeSizes), "please Select")
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Packages[i].Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Packages[i].Description, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Packages[i].Description, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Packages[i].Value, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Packages[i].Value, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Packages[i].Value, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Packages[i].WeightEstimated, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Packages[i].WeightEstimated, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.Packages[i].WeightEstimated, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        }
 
         <hr />
         <h4>Recipient Information</h4>

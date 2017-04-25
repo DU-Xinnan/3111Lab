@@ -214,7 +214,6 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\InvoicesController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
-    <Compile Include="Controllers\PackagesController.cs" />
     <Compile Include="Controllers\PackageTypesController.cs" />
     <Compile Include="Controllers\PakageTypeSizesController.cs" />
     <Compile Include="Controllers\PersonalShippingAccountsController.cs" />
@@ -382,7 +381,6 @@
     <Folder Include="Views\CreateShipment\" />
     <Folder Include="Views\Invoices\" />
     <Folder Include="Views\Packages\" />
-    <Folder Include="Views\Package\" />
     <Folder Include="Views\Pickups\" />
     <Folder Include="Views\Recipients\" />
     <Folder Include="Views\SavedAddresses\" />

@@ -62,10 +62,11 @@
         {
             string packageNum = "Package Number " + (i + 1);
             <h3>@Html.Label(packageNum)</h3>
+            @Html.ActionLink("delete", "Create", new { id = i }, null)
             <div class="form-group">
-                @Html.LabelFor(model => model.Packages[i].PackageType, htmlAttributes: new { @class = "control-label col-md-2" })
+                @Html.LabelFor(model => model.Packages[i].PackageTypeSize, htmlAttributes: new { @class = "control-label col-md-2" })
                 <div class="col-md-10">
-                    @Html.DropDownListFor(model => model.Packages[i].PackageType, new SelectList(ViewBag.PackageTypeSizes), "please Select")
+                    @Html.DropDownListFor(model => model.Packages[i].PackageTypeSize, new SelectList(ViewBag.PackageTypeSizes), "please Select")
                 </div>
             </div>
             <div class="form-group">
@@ -181,8 +182,6 @@
                 @Html.ValidationMessageFor(model => model.TaxPayer, "", new { @class = "text-danger" })
             </div>
         </div>
-
-
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Create" class="btn btn-default" />

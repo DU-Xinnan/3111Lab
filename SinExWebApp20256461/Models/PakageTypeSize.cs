@@ -12,7 +12,6 @@ namespace SinExWebApp20256461.Models
         public virtual int PakageTypeSizeID { get; set; }
         public virtual string size { get; set; }
         public virtual string weightLimit { get; set; }
-
         public virtual int PackageTypeID { get; set; }
         public virtual PackageType PackageType { get; set; }
     }
