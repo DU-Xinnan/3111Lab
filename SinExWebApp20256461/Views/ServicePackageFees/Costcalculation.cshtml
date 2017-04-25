@@ -1,0 +1,179 @@
+@model SinExWebApp20256461.ViewModels.CostCalculationViewModel
+<h1>Shipment Calculator</h1>
+<div class="form-horizontal">
+    @if (ViewBag.status == "initial")
+    {
+        using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-horizontal">
+                <hr />
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Origin, "Origin", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(a => a.Origin, new SelectList(Model.OriginList), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Origin, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Destination, "Destination", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(a => a.Destination, new SelectList(Model.DestinationList), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.Destination, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ServiceType, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(a => a.ServiceType, new SelectList(Model.ServiceTypesList), new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.ServiceType, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NumOfPackages, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.NumOfPackages, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.NumOfPackages, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" name="submit" value="Add Packages" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else if (ViewBag.status == "Add Packages")
+    {
+        using (Html.BeginForm())
+        {
+            <div class="form-group">
+                @Html.LabelFor(model => model.Origin, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Origin, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Destination, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.Destination, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.ServiceType, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.ServiceType, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.NumOfPackages, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.NumOfPackages, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </div>
+            </div>
+            for (var i = 0; i < Model.NumOfPackages; i += 1)
+            {
+                <hr />
+                string packageNum = "Package Number " + (i + 1);
+                <h3>@Html.Label(packageNum)</h3>
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    @Html.LabelFor(model => model.PackagesTypeSizes[i], "Package Type", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.DropDownListFor(a => a.PackagesTypeSizes[i], new SelectList(Model.PackageTypesSizeList), new { @class = "form-control" })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Weights, htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Weights[i], new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Weights[i], "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" name="submit" value="Calculate" class="btn btn-default" />
+                </div>
+            </div>
+        }
+    }
+    else if (ViewBag.status == "Calculate")
+    {
+        <table class="table table-bordered table-striped">
+            <tr>
+                <th>@Html.DisplayNameFor(model => model.Origin)</th>
+                <th> @Html.DisplayNameFor(model => model.Destination)</th>
+                <th> @Html.DisplayNameFor(model => model.ServiceType)</th>
+                <th>Package Type & Size</th>
+                <th>Weight</th>
+                <th> CNY</th>
+                <th> HKD</th>
+                <th>MOD</th>
+                <th>TWD</th>
+             </tr>
+            @for(int i = 0; i < Model.NumOfPackages; i += 1)
+            {
+                <tr>
+                    <th>
+                        @Html.DisplayFor(model => model.Origin)
+                    </th>
+                    <th>
+                        @Html.DisplayFor(model => model.Destination)
+                    </th>
+                    <th>
+                        @Html.DisplayFor(model => model.ServiceType)
+                    </th>
+                    <th>
+                        @Html.DisplayFor(model => model.PackagesTypeSizes[i])
+                    </th>
+                    <th>@if (Model.PackagesTypeSizes[i].Contains("Envenlope"))
+                    {
+                        @Html.Label("Not Applicable")
+                    }
+                    else
+                    {
+                        @Html.DisplayFor(model => model.Weights[i])
+                    }
+                    </th>
+                    <th>
+                        @ViewBag.Prices[i]["CNY"]
+                    </th>
+                    <th>
+                        @ViewBag.Prices[i]["HKD"]
+                    </th>
+                    <th>
+                        @ViewBag.Prices[i]["MOP"]
+                    </th>
+                    <th>
+                        @ViewBag.Prices[i]["TWD"]
+                    </th>
+                </tr>
+            }
+         </table>
+         <hr />
+         <h3> Total Price </h3>
+         <table class="table table-bordered table-striped">
+             <tr>
+                 <th>CNY</th>
+                 <th>HKD</th>
+                 <th>MOP</th>
+                 <th>TWD</th>
+             </tr>
+             <tr>
+                 <th>@ViewBag.TotalPrice["CNY"]</th>
+                 <th>@ViewBag.TotalPrice["HKD"]</th>
+                 <th>@ViewBag.TotalPrice["MOP"]</th>
+                 <th>@ViewBag.TotalPrice["TWD"]</th>
+             </tr>
+         </table>
+    }
+    @ViewBag.msg
+</div>
