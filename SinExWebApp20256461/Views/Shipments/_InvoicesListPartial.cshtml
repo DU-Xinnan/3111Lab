@@ -1,0 +1,91 @@
+﻿@model IEnumerable<SinExWebApp20256461.ViewModels.InvoicesListViewModel>
+
+@if (Model.Any())
+{
+    <p>The following are the invoices for the specified account.</p>
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.WaybillId)
+            </th>
+            <th>
+                @Html.ActionLink("ServiceType", "GenerateInvoiceReport", new
+           {
+               sortOrder = ViewBag.ServiceTypeSortParm,
+               ShippingAccountId = ViewBag.CurrentShippingAccountId
+           })
+            </th>
+            <th>
+                @Html.ActionLink("ShippedDate", "GenerateInvoiceReport", new
+           {
+               sortOrder = ViewBag.ShippedDateSortParm,
+               ShippingAccountId = ViewBag.CurrentShippingAccountId
+           })
+            </th>
+            <th>
+                @Html.ActionLink("RecipientName", "GenerateInvoiceReport", new
+           {
+               sortOrder = ViewBag.RecipientNameSortParm,
+               ShippingAccountId = ViewBag.CurrentShippingAccountId
+           })
+            </th>
+            <th>
+                @Html.ActionLink("TotalInvoiceAmount", "GenerateInvoiceReport", new
+           {
+               sortOrder = ViewBag.TotalAmountPayableSortParm,
+               ShippingAccountId = ViewBag.CurrentShippingAccountId
+           })
+            </th>
+            <th>
+                @Html.ActionLink("Origin", "GenerateInvoiceReport", new
+           {
+               sortOrder = ViewBag.OriginSortParm,
+               ShippingAccountId = ViewBag.CurrentShippingAccountId
+           })
+            </th>
+            <th>
+                @Html.ActionLink("Destination", "GenerateInvoiceReport", new
+           {
+               sortOrder = ViewBag.DestinationSortParm,
+               ShippingAccountId = ViewBag.CurrentShippingAccountId
+           })
+            </th>
+            <th>
+                @Html.ActionLink("ShippingAccountId", "GenerateInvoiceReport", new
+           {
+               sortOrder = ViewBag.ShippingAccountIdSortParm,
+               ShippingAccountId = ViewBag.CurrentShippingAccountId
+           })
+            </th>
+        </tr>
+        @foreach(var item in Model)
+        {
+            <tr>
+                <th>
+                    @Html.DisplayFor(modelItem => item.WaybillId)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.ServiceType)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.ShippedDate)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.RecipientName)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.TotalAmountPayable)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.Origin)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.Destination)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.ShippingAccountId)
+                </th>
+            </tr>
+        }
+    </table>
+}

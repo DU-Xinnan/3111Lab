@@ -267,6 +267,9 @@
     <Compile Include="ViewModels\CostViewModel.cs" />
     <Compile Include="ViewModels\RegisterCustomerViewModel.cs" />
     <Compile Include="ViewModels\ServicePackageFeeViewModel.cs" />
+    <Compile Include="ViewModels\InvoicesListViewModel.cs" />
+    <Compile Include="ViewModels\InvoicesReportViewModel.cs" />
+    <Compile Include="ViewModels\InvoicesSearchViewModel.cs" />
     <Compile Include="ViewModels\ShipmentsSearchViewModel.cs" />
     <Compile Include="ViewModels\ShipmentsListViewModel.cs" />
     <Compile Include="ViewModels\ShipmentsReportViewModel.cs" />
@@ -387,6 +390,10 @@
     <Content Include="Views\Shipments\getCost.cshtml" />
     <Content Include="Views\Shipments\_getCostsSearchPartial.cshtml" />
     <Content Include="Views\Shipments\_getCostsDisplayPartial.cshtml" />
+    <Content Include="Views\Shipments\GenerateInvoiceReport.cshtml" />
+    <Content Include="Views\Shipments\_InvoicesSearchPartial.cshtml" />
+    <Content Include="Views\Shipments\_InvoicesListPartial.cshtml" />
+    <Content Include="Views\Shipments\_InvoicesPagingPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

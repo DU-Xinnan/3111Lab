@@ -345,6 +345,126 @@ namespace SinExWebApp20256461.Controllers
             }
         }
 
+        public ActionResult GenerateInvoiceReport(int? ShippingAccountId, string sortOrder, int? page, DateTime? ShippedStartDate)
+        {
+            // Instantiate an instance of the ShipmentsReportViewModel and the ShipmentsSearchViewModel.
+            var invoiceSearch = new InvoicesReportViewModel();
+            invoiceSearch.Invoice = new InvoicesSearchViewModel();
+            ViewBag.CurrentSort = sortOrder;
+            int pageSize = 5;
+            int pageNumber = (page ?? 1);
+            if (ShippingAccountId == null)
+            {
+                ShippingAccountId = 0;
+            }
+            // Populate the ShippingAccountId dropdown list.
+            invoiceSearch.Invoice.ShippingAccounts = PopulateShippingAccountsDropdownList().ToList();
+            if (User.IsInRole("Customer"))
+            {
+                invoiceSearch.Invoice.ShippingAccounts = PopulateCustomerShippingAccountsDropdownList().ToList();
+                //var currShippingAccount = db.Shipments.Where(a => a.ShippingAccount.UserName == User.Identity.Name).Select(a => a.ShippingAccountId).Distinct().ToList();
+                //if (!currShippingAccount.Contains((int)ShippingAccountId))
+                //{
+                // shipmentSearch.Shipments = new ShipmentsListViewModel().ToPagedList;
+                //return View(shipmentSearch);
+                //}
+            }
+            ViewBag.CurrentShippingAccountId = ShippingAccountId;
+            ViewBag.CurrentShippingStartDate = ShippedStartDate;
+            // Initialize the query to retrieve shipments using the ShipmentsListViewModel.
+            var invoiceQuery = from s in db.Invoices
+                                select new InvoicesListViewModel
+                                {
+                                    WaybillId = s.WaybillId,
+                                    ServiceType = s.Shipment.ServiceType,
+                                    ShippedDate = s.Shipment.ShippedDate,
+                                    RecipientName = s.Shipment.RecipientName,
+                                    TotalAmountPayable = s.TotalAmountPayable,
+                                    Origin = s.Shipment.Origin,
+                                    Destination = s.Shipment.Destination,
+                                    ShippingAccountNumber = s.ShippingAccountNumber
+                                };
+            if (User.IsInRole("Customer"))
+            {
+                string userName = System.Web.HttpContext.Current.User.Identity.Name;
+                shipmentQuery = from s in db.Shipments
+                                where s.ShippingAccount.UserName == userName
+                                select new ShipmentsListViewModel
+                                {
+                                    WaybillId = s.WaybillId,
+                                    ServiceType = s.ServiceType,
+                                    ShippedDate = s.ShippedDate,
+                                    DeliveredDate = s.DeliveredDate,
+                                    RecipientName = s.RecipientName,
+                                    NumberOfPackages = s.NumberOfPackages,
+                                    Origin = s.Origin,
+                                    Destination = s.Destination,
+                                    ShippingAccountId = s.ShippingAccountId
+                                };
+            }
+            // Add the condition to select a spefic shipping account if shipping account id is not null.
+            if (ShippingAccountId != null)
+            {
+                // TODO: Construct the LINQ query to retrive only the shipments for the specified shipping account id.
+                shipmentQuery = from s in shipmentQuery
+                                where s.ShippingAccountId == ShippingAccountId
+                                select s;
+                // shipmentSearch.Shipments = shipmentQuery.ToPagedList(pageNumber, pageSize);
+            }
+            else
+            {
+                // Return an empty result if no shipping account id has been selected.
+                // shipmentSearch.Shipments = new ShipmentsListViewModel[0].ToPagedList(pageNumber, pageSize);
+                shipmentQuery = from s in shipmentQuery
+                                where s.ShippingAccountId == 0
+                                select s;
+                // page = 1;
+            }
+
+            if (ShippedStartDate != null && ShippedEndDate != null)
+            {
+                shipmentQuery = from s in shipmentQuery
+                                where s.ShippedDate >= ShippedStartDate && s.ShippedDate <= ShippedEndDate
+                                select s;
+            }
+            ViewBag.ServiceTypeSortParm = string.IsNullOrEmpty(sortOrder) ? "serviceType_desc" : "";
+            ViewBag.ShippedDateSortParm = string.IsNullOrEmpty(sortOrder) ? "shippedDate_desc" : "";
+            ViewBag.DeliveredDateSortParm = string.IsNullOrEmpty(sortOrder) ? "DeliveredDate_desc" : "";
+            ViewBag.RecipientNameSortParm = string.IsNullOrEmpty(sortOrder) ? "RecipientName_desc" : "";
+            ViewBag.OriginSortParm = string.IsNullOrEmpty(sortOrder) ? "Origin_desc" : "";
+            ViewBag.DestinationSortParm = string.IsNullOrEmpty(sortOrder) ? "Destination_desc" : "";
+            ViewBag.ShippingAccountIdSortParm = string.IsNullOrEmpty(sortOrder) ? "ShippingAccountId_desc" : "";
+            switch (sortOrder)
+            {
+                case "serviceType_desc":
+                    shipmentQuery = shipmentQuery.OrderBy(s => s.ServiceType);
+                    break;
+                case "shippedDate_desc":
+                    shipmentQuery = shipmentQuery.OrderBy(s => s.ShippedDate);
+                    break;
+                case "DeliveredDate_desc":
+                    shipmentQuery = shipmentQuery.OrderBy(s => s.DeliveredDate);
+                    break;
+                case "RecipientName_desc":
+                    shipmentQuery = shipmentQuery.OrderBy(s => s.RecipientName);
+                    break;
+                case "Origin_desc":
+                    shipmentQuery = shipmentQuery.OrderBy(s => s.ServiceType);
+                    break;
+                case "Destination_desc":
+                    shipmentQuery = shipmentQuery.OrderBy(s => s.Destination);
+                    break;
+                case "ShippingAccountId_desc":
+                    shipmentQuery = shipmentQuery.OrderBy(s => s.ShippingAccountId);
+                    break;
+                default:
+                    shipmentQuery = shipmentQuery.OrderBy(s => s.WaybillId);
+                    break;
+            }
+            shipmentSearch.Shipments = shipmentQuery.ToPagedList(pageNumber, pageSize);
+            return View(shipmentSearch);
+        }
+
         public ActionResult getCost(string Origin, string Destination, string ServiceType, string PackageType, string Size, int? weights)
         {
             var cost = new CostViewModel();
