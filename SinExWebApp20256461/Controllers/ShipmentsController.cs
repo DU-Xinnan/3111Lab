@@ -413,7 +413,7 @@ namespace SinExWebApp20256461.Controllers
             return View();
         }
 
-        // GET: Shipments/Edit/5
+        // GET: Shipments/Edit
         public ActionResult Edit(int? id)
         {
             if (id == null)
@@ -424,6 +424,7 @@ namespace SinExWebApp20256461.Controllers
 
             var ret = new CreateShipmentViewModel();
             ret.Shipment = shipment;
+            ret.Packages = shipment.Packages.ToList();
 
             ViewBag.ServiceTypes = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
             ViewBag.PackageTypeSizes = db.PakageTypeSizes.Select(a => a.size).Distinct().ToList();

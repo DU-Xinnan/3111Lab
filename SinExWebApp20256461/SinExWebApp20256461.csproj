@@ -223,6 +223,7 @@
     <Compile Include="Controllers\ServicePackageFeesController.cs" />
     <Compile Include="Controllers\ServiceTypesController.cs" />
     <Compile Include="Controllers\ShipmentsController.cs" />
+    <Compile Include="Controllers\TrackingsController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -248,8 +249,10 @@
     <Compile Include="Models\Shipment.cs" />
     <Compile Include="Models\ShippingAccount.cs" />
     <Compile Include="Models\SinExWebApp20256461Context.cs" />
+    <Compile Include="Models\Tracking.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="ViewModels\CostCalculationViewModel.cs" />
     <Compile Include="ViewModels\CostViewModel.cs" />
     <Compile Include="ViewModels\CreateShipmentViewModel.cs" />
     <Compile Include="ViewModels\RegisterCustomerViewModel.cs" />
@@ -257,6 +260,7 @@
     <Compile Include="ViewModels\ShipmentsSearchViewModel.cs" />
     <Compile Include="ViewModels\ShipmentsListViewModel.cs" />
     <Compile Include="ViewModels\ShipmentsReportViewModel.cs" />
+    <Compile Include="ViewModels\TrackingViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -374,6 +378,7 @@
     <Content Include="Views\Shipments\getCost.cshtml" />
     <Content Include="Views\Shipments\_getCostsSearchPartial.cshtml" />
     <Content Include="Views\Shipments\_getCostsDisplayPartial.cshtml" />
+    <Content Include="Views\ServicePackageFees\Costcalculation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -384,6 +389,7 @@
     <Folder Include="Views\Pickups\" />
     <Folder Include="Views\Recipients\" />
     <Folder Include="Views\SavedAddresses\" />
+    <Folder Include="Views\Trackings\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

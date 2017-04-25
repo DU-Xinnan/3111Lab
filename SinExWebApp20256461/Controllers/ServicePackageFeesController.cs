@@ -7,7 +7,7 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using SinExWebApp20256461.Models;
-
+using SinExWebApp20256461.ViewModels;
 namespace SinExWebApp20256461.Controllers
 {
     public class ServicePackageFeesController : BaseController
@@ -123,7 +123,72 @@ namespace SinExWebApp20256461.Controllers
             db.SaveChanges();
             return RedirectToAction("Index");
         }
-
+        public ActionResult Costcalculation(string Origin, string Destination, string ServiceType, IList<string> PackagesTypeSizes, IList<decimal> Weights, int? NumOfPackages, string submit)
+        {
+            CostCalculationViewModel CostViewModel = new CostCalculationViewModel();
+            CostViewModel.ServiceTypesList = db.ServiceTypes.Select(a => a.Type).Distinct().ToList();
+            CostViewModel.DestinationList = db.Destinations.Select(a => a.City).Distinct().ToList();
+            CostViewModel.OriginList = db.Destinations.Select(a => a.City).Distinct().ToList();
+            CostViewModel.PackageTypesSizeList = db.PakageTypeSizes.Select(a => a.size).Distinct().ToList();
+            if (String.IsNullOrEmpty(submit) || NumOfPackages == null || NumOfPackages <= 0)
+            {
+                if (NumOfPackages <= 0)
+                {
+                    ViewBag.msg = "Package number can't smaller or equal zero";
+                }
+                ViewBag.status = "initial";
+                return View(CostViewModel);
+            }
+            else if (submit == "Add Packages")
+            {
+                CostViewModel.Origin = Origin;
+                CostViewModel.Destination = Destination;
+                CostViewModel.ServiceType = ServiceType;
+                CostViewModel.NumOfPackages = (int)NumOfPackages;
+                ViewBag.status = "Add Packages";
+                return View(CostViewModel);
+            }
+            else if (submit == "Calculate")
+            {
+                CostViewModel.PackagesTypeSizes = PackagesTypeSizes;
+                CostViewModel.Weights = Weights;
+                CostViewModel.NumOfPackages = (int)NumOfPackages;
+                CostViewModel.Origin = Origin;
+                CostViewModel.Destination = Destination;
+                CostViewModel.ServiceType = ServiceType;
+                Dictionary<string, decimal>[] Prices = new Dictionary<string, decimal>[(int)NumOfPackages];
+                Dictionary<string, decimal> TotalPrice = new Dictionary<string, decimal>();
+                TotalPrice["CNY"] = 0;
+                for (var i = 0; i < NumOfPackages; i += 1)
+                {
+                    if (!PackagesTypeSizes[i].Contains("Envenlope"))
+                    {
+                        //if (!Regex.IsMatch(Weights[i], "^\\d+(?:\\.\\d)?$"))
+                        //{
+                        //    ViewBag.status = "Add Packages";
+                        //    ViewBag.msg = "Please input valid weight";
+                        //    return View(CostViewModel);
+                        //}
+                        if (Weights[i] <= 0 || Weights[i] > (decimal)5792000000000000000000000.0)
+                        {
+                            ViewBag.status = "Add Packages";
+                            ViewBag.msg = "Please weight can't be smaller or equal to 1, or larger than the weight of the earth ";
+                            return View(CostViewModel);
+                        }
+                    }
+                    Prices[i] = Calculate(ServiceType, PackagesTypeSizes[i], Weights[i]);
+                    TotalPrice["CNY"] += Prices[i]["CNY"];
+                }
+                TotalPrice["HKD"] = ConvertCurrency("HKD", TotalPrice["CNY"]);
+                TotalPrice["MOP"] = ConvertCurrency("MOP", TotalPrice["CNY"]);
+                TotalPrice["TWD"] = ConvertCurrency("TWD", TotalPrice["CNY"]);
+                ViewBag.Prices = Prices;
+                ViewBag.TotalPrice = TotalPrice;
+                ViewBag.status = "Calculate";
+                return View(CostViewModel);
+            }
+            return View();
+        }
         protected override void Dispose(bool disposing)
         {
             if (disposing)
